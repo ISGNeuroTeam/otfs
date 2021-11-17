@@ -13,16 +13,23 @@ import scala.util.{Failure, Success, Try}
 class Repartition(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, utils) {
   val requiredKeywords: Set[String] = Set("num")
 
-  def transform(_df: DataFrame): DataFrame =  {
-    val numPartitions = Try(getKeyword("num").get) match {
+  val numberOfPartitions: String = {
+    Try(getKeyword("num").get) match {
       case Success(x) => x
       case Failure(_)=> sendError("The value of parameter 'num' should be specified")
+    }
+  }
 
-    }
-    val num = Try(numPartitions.toInt) match {
+  private def castStringToInt: String => Int = (s: String) => {
+    Try(s.toInt) match {
       case Success(x) => x
-      case Failure(_) => sendError("The value of parameter 'num' should be of int type")
+      case Failure(_) => sendError("You should specify the 'num' parameter of integer type")
     }
-    _df.repartition(num)
+  }
+
+  def transform(_df: DataFrame): DataFrame =  {
+    _df.repartition(
+      castStringToInt(numberOfPartitions)
+    )
   }
 }
