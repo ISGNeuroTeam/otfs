@@ -18,17 +18,17 @@ resolvers +=
 val dependencies = new {
   private val configVersion = "1.3.4"
   private val dispatcherSdkVersion = "1.1.1"
-  private val scalatestVersion = "3.2.9"
+//  private val scalatestVersion = "3.2.9"
 
   val config = "com.typesafe" % "config" % configVersion % Compile
   val dispatcherSdk = "ot.dispatcher" % "dispatcher-sdk_2.11" % dispatcherSdkVersion  % Compile
-  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % Test
+//  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % Test
 }
 
 libraryDependencies ++= Seq(
   dependencies.config,
   dependencies.dispatcherSdk,
-  dependencies.scalatest
+//  dependencies.scalatest
 )
 
 Test / parallelExecution := false

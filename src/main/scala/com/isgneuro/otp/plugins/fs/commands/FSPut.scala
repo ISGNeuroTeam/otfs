@@ -1,6 +1,6 @@
-package com.isgneuro.otp.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.fs.internals.Storage
+import com.isgneuro.otp.plugins.fs.internals.Storage
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
 import org.apache.spark.sql.types.NullType
 import org.apache.spark.sql.functions.col
@@ -37,7 +37,7 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     (partitions, df) => partitions.filterNot(df.columns.contains)
 
   override def transform(_df: DataFrame): DataFrame = {
-    val dfw = (castNullColsToString andThen createDfWriter)(_df)
+    val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
     partitionBy match {
       case Some(partitions) if isAllColsExists(partitions, _df) =>
         dfw.partitionBy(partitions: _*).save(absolutePath)

@@ -1,6 +1,6 @@
-package com.isgneuro.otp.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.fs.internals.Storage
+import com.isgneuro.otp.plugins.fs.internals.Storage
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.PluginUtils
@@ -16,7 +16,7 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       .format(format)
       .option("header", "true")
 
-    val dfReader = if (format == "parquet") commonReader else commonReader.option("inferSchema", "true")
+    val dfReader = if (format == "csv") commonReader.option("inferSchema", "true") else commonReader
     dfReader.load(absolutePath)
   }
 }

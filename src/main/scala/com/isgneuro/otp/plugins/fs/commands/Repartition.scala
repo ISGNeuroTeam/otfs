@@ -1,4 +1,4 @@
-package com.isgneuro.otp.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
 import org.apache.spark.sql.DataFrame
 import ot.dispatcher.sdk.core.SimpleQuery
@@ -16,14 +16,14 @@ class Repartition(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq,
   val numberOfPartitions: String = {
     Try(getKeyword("num").get) match {
       case Success(x) => x
-      case Failure(_)=> sendError("The value of parameter 'num' should be specified")
+      case Failure(_)=> sendError("You should specify number of partitions in 'num' parameter")
     }
   }
 
   private def castStringToInt: String => Int = (s: String) => {
     Try(s.toInt) match {
       case Success(x) => x
-      case Failure(_) => sendError("You should specify the 'num' parameter of integer type")
+      case Failure(_) => sendError("You should specify the 'num' parameter as integer")
     }
   }
 
