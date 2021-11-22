@@ -1,6 +1,9 @@
 *.class
 *.log
+*.tar.gz
+*.tgz
 .idea/
 project/
 .bsp/
 target/
+build/
