@@ -1,13 +1,13 @@
 package com.isgneuro.otp.fs.commands
 
-import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
 import com.isgneuro.otp.fs.internals.Storage
+import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
 import org.apache.spark.sql.types.NullType
 import org.apache.spark.sql.functions.col
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.PluginUtils
 
-class Put(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
+class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   private val mode = getKeyword("mode") match {
     case Some("append") => SaveMode.Append

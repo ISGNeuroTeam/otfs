@@ -1,0 +1,25 @@
+site_name: Аналитика в OTP
+nav:
+  - OTFS:
+    - Команды:
+      - FS Get: fsget.md
+      - FS Put: fsput.md
+      - Repartition: repartition.md
+    - Конфигурация: config.md
+theme:
+  name: material
+  palette:
+    primary: indigo
+  language: ru
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+  icon:
+    repo: fontawesome/brands/git
+repo_url: https://github.com/ISGNeuroTeam/otfs
+repo_name: OT Feature Store
+extra:
+  social:
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/channel/UCt29c_xfFLEq6H9hV0ck3qA
