@@ -61,6 +61,7 @@ build: package
 	cp target/$(PROJECT_NAME_LOW_CASE)-$(VERSION).jar build/$(PROJECT_NAME)
 	cp README.md build/$(PROJECT_NAME)/
 	cp CHANGELOG.md build/$(PROJECT_NAME)/
+	cp -r docs build/
 	#cp LICENSE.md build/$(PROJECT_NAME)/
 
 clean:
