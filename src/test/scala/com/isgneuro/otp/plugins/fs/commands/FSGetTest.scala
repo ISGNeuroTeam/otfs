@@ -73,6 +73,25 @@ class FSGetTest extends CommandTest {
     assert(actual.except(df).count() == 0)
   }
 
+  test("Do not infer schema if 'csv' format specified and inferSchema=false") {
+    df.show()
+    val path = new File("src/test/resources/temp/read_test_file_csv").getAbsolutePath
+    df.write.format("csv").option("header", "true").mode("overwrite").save(path)
+    val simpleQuery = SimpleQuery(""" format=csv path=read_test_file_csv inferSchema=false""")
+    val commandReadFile = new FSGet(simpleQuery, utils)
+    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+    val expectedSchema = StructType(
+      List(
+        StructField("a", StringType),
+        StructField("b", StringType)
+      )
+    )
+
+    assert(actual.columns.sameElements(expectedSchema.map(_.name)))
+    assert(actual.schema.equals(expectedSchema))
+    assert(actual.except(df).count() == 0)
+  }
+
   test("Throw an error if no path specified") {
     df.show()
     val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath

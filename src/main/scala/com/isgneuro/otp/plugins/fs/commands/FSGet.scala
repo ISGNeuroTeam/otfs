@@ -9,6 +9,8 @@ import scala.util.Try
 
 class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
+  private val isInferSchema: String = getKeyword("inferSchema").getOrElse("true")
+
   override def transform(_df: DataFrame): DataFrame = {
     val sparkSession = Try(_df.sparkSession)
       .getOrElse(SparkSession.builder().getOrCreate())
@@ -16,7 +18,7 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       .format(format)
       .option("header", "true")
 
-    val dfReader = if (format == "csv") commonReader.option("inferSchema", "true") else commonReader
+    val dfReader = if (format == "csv") commonReader.option("inferSchema", isInferSchema) else commonReader
     dfReader.load(absolutePath)
   }
 }
