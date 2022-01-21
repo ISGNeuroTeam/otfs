@@ -42,10 +42,9 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       case Some(partitions) if isAllColsExists(partitions, _df) =>
         dfw.partitionBy(partitions: _*).save(absolutePath)
 
-      case Some(partitions) => {
+      case Some(partitions) =>
         val missedCols = getMissedCols(partitions, _df)
         sendError(s"Missed columns: '${missedCols.mkString(", ")}")
-      }
 
       case _ => dfw.save(absolutePath)
     }

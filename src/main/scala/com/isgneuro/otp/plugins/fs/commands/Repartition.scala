@@ -16,14 +16,14 @@ class Repartition(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq,
   val numberOfPartitions: String = {
     Try(getKeyword("num").get) match {
       case Success(x) => x
-      case Failure(_)=> sendError("You should specify number of partitions in 'num' parameter")
+      case Failure(_) => sendError("You should specify number of partitions in 'num' parameter")
     }
   }
 
   private def castStringToInt: String => Int = (s: String) => {
     Try(s.toInt) match {
-      case Success(x) => x
-      case Failure(_) => sendError("You should specify the 'num' parameter as integer")
+      case Success(x) if x > 0 => x
+      case _ => sendError("You should specify the 'num' parameter as positive integer")
     }
   }
 

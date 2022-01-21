@@ -1,5 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import ot.dispatcher.sdk.test.CommandTest
@@ -8,10 +9,14 @@ import ot.dispatcher.sdk.core.SimpleQuery
 import java.io.File
 
 class FSGetTest extends CommandTest {
+  Logger
+    .getLogger("org")
+    .setLevel(Level.ERROR)
+
   override val dataset: String = """[
-    |{"a":"1","b":"2"},
-    |{"a":"10","b":"20"}
-    |]""".stripMargin
+                                   |{"a":"1","b":"2"},
+                                   |{"a":"10","b":"20"}
+                                   |]""".stripMargin
 
   val initialDf: DataFrame = jsonToDf(dataset)
 

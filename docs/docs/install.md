@@ -1,0 +1,6 @@
+- **make pack**:
+    - будет проведена очистка существующих артефактов, тестирование, создание директории build и создание архива otfs<***>.tar.gz
+    - скопировать директорию build/OTFS в /opt/otp/dispatcher/plugins (или распаковать получившийся архив в ту же директорию)
+    - переименовать loglevel.properties.example => loglevel.properties
+    - переименовать plugin.conf.example => plugin.conf
+    - при необходимости сконфигурировать plugin.conf и loglevel.properties
