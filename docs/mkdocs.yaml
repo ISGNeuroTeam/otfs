@@ -1,11 +1,13 @@
 site_name: Аналитика в OTP
 nav:
   - OTFS:
-    - Команды:
-      - FS Get: fsget.md
-      - FS Put: fsput.md
-      - Repartition: repartition.md
-    - Конфигурация: config.md
+      - Команды:
+          - FS Get: fsget.md
+          - FS Put: fsput.md
+          - Repartition: repartition.md
+      - Конфигурация: config.md
+      - Установка: install.md
+      - Зависимости: dependencies.md
 theme:
   name: material
   palette:

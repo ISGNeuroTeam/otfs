@@ -1,5 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.lit
 import ot.dispatcher.sdk.test.CommandTest
@@ -7,33 +8,37 @@ import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
 
-class FSPutTest extends CommandTest{
+class FSPutTest extends CommandTest {
+  Logger
+    .getLogger("org")
+    .setLevel(Level.ERROR)
+
   override val dataset: String = """[
-    |{"a":"1","b":"2"},
-    |{"a":"10","b":"20"}
-    |]""".stripMargin
+                                   |{"a":"1","b":"2"},
+                                   |{"a":"10","b":"20"}
+                                   |]""".stripMargin
 
   val datasetToAppend: String = """[
-    |{"a":"100","b":"200"}
-    |]""".stripMargin
+                                  |{"a":"100","b":"200"}
+                                  |]""".stripMargin
 
   val dataset3cols: String = """[
-    |{"a":"1","b":"2","c":"3"},
-    |{"a":"10","b":"2","c":"30"},
-    |{"a":"10","b":"20","c":"300"}
-    |]""".stripMargin
+                               |{"a":"1","b":"2","c":"3"},
+                               |{"a":"10","b":"2","c":"30"},
+                               |{"a":"10","b":"20","c":"300"}
+                               |]""".stripMargin
 
   val appended: String = """[
-    | {"a":"1","b":"2"},
-    |{"a":"10","b":"20"},
-    |{"a":"100","b":"200"}
-    |]""".stripMargin
+                           | {"a":"1","b":"2"},
+                           |{"a":"10","b":"20"},
+                           |{"a":"100","b":"200"}
+                           |]""".stripMargin
 
   val datasetNulls: String = """[
-    | {"a":"1","b":"2","c":null},
-    |{"a":"10","b":"20","c":null},
-    |{"a":"100","b":"200","c":null}
-    |]""".stripMargin
+                               | {"a":"1","b":"2","c":null},
+                               |{"a":"10","b":"20","c":null},
+                               |{"a":"100","b":"200","c":null}
+                               |]""".stripMargin
 
   private lazy val sparkSession: SparkSession =
     SparkSession.builder()

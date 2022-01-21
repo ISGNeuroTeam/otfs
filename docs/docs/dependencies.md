@@ -1,0 +1,4 @@
+- dispatcher-sdk_2.11  1.2.0
+- sbt 1.5.8
+- scala 2.11.12
+- eclipse temurin 1.8.0_312 (ранее назывался AdoptOpenJDK)

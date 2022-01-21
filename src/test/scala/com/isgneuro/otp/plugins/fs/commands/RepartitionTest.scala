@@ -1,10 +1,15 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
 
-class RepartitionTest extends CommandTest{
+class RepartitionTest extends CommandTest {
+  Logger
+    .getLogger("org")
+    .setLevel(Level.ERROR)
+
   override val dataset: String = """_"""
 
   private lazy val sparkSession: SparkSession =
@@ -48,6 +53,6 @@ class RepartitionTest extends CommandTest{
       val command = new Repartition(query, utils)
       command.transform(df)
     }
-    assert(thrown.getMessage.contains("You should specify the 'num' parameter as integer"))
+    assert(thrown.getMessage.contains("You should specify the 'num' parameter as positive integer"))
   }
 }

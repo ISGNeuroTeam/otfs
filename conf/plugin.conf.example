@@ -1,0 +1,8 @@
+pluginName = "OTFS"
+loglevel = "/opt/otp/dispatcher/plugins/OTFS/loglevel.properties"
+
+
+storage {
+  fs = "file://"
+  path = "/opt/otp/otfs/"
+}
