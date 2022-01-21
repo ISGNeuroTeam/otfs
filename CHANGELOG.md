@@ -1,5 +1,9 @@
 # Changelog
 
+# [1.0.0] - 21.01.2022
+### Changed
+- Minor refactoring and documentation update due to release.
+
 # [0.1.2]
 
 ### Added

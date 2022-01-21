@@ -1,6 +1,6 @@
 name := "OTFS"
 description := "Feature Store for OT.Platform"
-version := "0.1.2"
+version := "1.0.0"
 scalaVersion := "2.11.12"
 crossPaths := false
 
