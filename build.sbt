@@ -1,7 +1,7 @@
 name := "OTFS"
 description := "Feature Store for OT.Platform"
 version := "1.0.0"
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.10"
 crossPaths := false
 
 credentials += Credentials(
@@ -16,11 +16,11 @@ resolvers +=
     .withAllowInsecureProtocol(true)
 
 val dependencies = new {
-  private val dispatcherSdkVersion = "1.2.0"
+  private val dispatcherSdkVersion = "2.0.0"
   //  private val configVersion = "1.3.4"
   //  private val scalatestVersion = "3.2.9"
 
-  val dispatcherSdk = "ot.dispatcher" % "dispatcher-sdk_2.11" % dispatcherSdkVersion  % Compile
+  val dispatcherSdk = "ot.dispatcher" % "dispatcher-sdk_2.12" % dispatcherSdkVersion  % Compile
   //  val config = "com.typesafe" % "config" % configVersion % Compile
   //  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % Test
 }
