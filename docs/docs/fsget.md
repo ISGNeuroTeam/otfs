@@ -22,5 +22,5 @@ _Обязательные параметры_:
 #### Примеры запросов
 
 ```
-| fsget format=parquet path=mechfond/well_daily_params 
+| fsget format=parquet path=demo_train
 ```
