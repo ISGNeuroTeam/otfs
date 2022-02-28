@@ -33,5 +33,5 @@ _Обязательные параметры_:
 #### Примеры запросов
 
 ```
-| fsput format=parquet mode=overwrite partitionBy=__well_num,__pad_num path=mechfond/well_daily_params 
+| fsput format=parquet mode=overwrite  path=mechfond/well_daily_params 
 ```
