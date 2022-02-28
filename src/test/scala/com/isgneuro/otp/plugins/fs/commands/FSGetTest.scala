@@ -92,6 +92,30 @@ class FSGetTest extends CommandTest {
     assert(actual.except(df).count() == 0)
   }
 
+  test("Use custom separator if specified ") {
+    df.show()
+    val path = new File("src/test/resources/temp/read_test_file_csv").getAbsolutePath
+    df.write
+      .format("csv")
+      .option("header", "true")
+      .option("delimiter", ";")
+      .mode("overwrite")
+      .save(path)
+    val simpleQuery = SimpleQuery(""" format=csv sep=";" path=read_test_file_csv """)
+    val commandReadFile = new FSGet(simpleQuery, utils)
+    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+    val expectedSchema = StructType(
+      List(
+        StructField("a", IntegerType),
+        StructField("b", StringType)
+      )
+    )
+
+    assert(actual.columns.sameElements(expectedSchema.map(_.name)))
+    assert(actual.schema.equals(expectedSchema))
+    assert(actual.except(df).count() == 0)
+  }
+
   test("Throw an error if no path specified") {
     df.show()
     val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath
