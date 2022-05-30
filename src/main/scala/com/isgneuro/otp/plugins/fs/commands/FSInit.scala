@@ -52,6 +52,7 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
           val mainBranchConfig = new MainBranchConfig
           mainBranchConfig.create(modelPath)
           val mainCfgContent = ConfigFactory.empty.withValue("branchname", ConfigValueFactory.fromAnyRef("main"))
+            .withValue("latestversion", ConfigValueFactory.fromAnyRef("1"))
           mainBranchConfig.addContent(mainCfgContent.root().render(ConfigRenderOptions.concise()))
           //result info table
           import spark.implicits._

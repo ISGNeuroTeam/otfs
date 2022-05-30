@@ -29,6 +29,7 @@ class FsInitTest extends CommandTest {
     assert(modelConfig.getString("model") == "electronic")
     assert(modelConfig.getString("format") == "parquet")
     assert(modelConfig.getString("mode") == "onewrite")
+    assert(modelConfig.getString("latestversion") == "1")
     //assert(modelConfig.getStringList("branches") == Array[String]("main").toIterable.asJava)
     val mainBranchPath = modelPath + "/main"
     val mainBranchDir = new File(mainBranchPath)
@@ -59,6 +60,7 @@ class FsInitTest extends CommandTest {
     assert(modelConfig.getString("model") == "economic")
     assert(modelConfig.getString("format") == "csv")
     assert(modelConfig.getString("mode") == "onewrite")
+    assert(modelConfig.getString("latestversion") == "1")
     //assert(modelConfig.getStringList("branches") == Array[String]("main").toIterable.asJava)
     val mainBranchPath = modelPath + "/main"
     val mainBranchDir = new File(mainBranchPath)
