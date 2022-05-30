@@ -11,7 +11,12 @@ class Storage(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, uti
   val format: String = getKeyword("format").getOrElse("parquet")
   val path: String = getKeyword("path") match {
     case Some(p) => p.replace("../","")
-    case None => sendError("No path specified")
+    case None => ""
+  }
+  //create model as path
+  val model: String = getKeyword("model") match {
+    case Some(m) => m
+    case None => sendError("No model specified")
   }
   val fs: String = pluginConfig.getString("storage.fs")
   val basePath: String = pluginConfig.getString("storage.path")
@@ -20,6 +25,8 @@ class Storage(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, uti
 
   val requiredKeywords: Set[String] = Set("path")
   val optionalKeywords: Set[String] = Set("format")
+
+  def getmodelPath = fs + new File(basePath, model + "/").getAbsolutePath
 
   override def transform(_df: DataFrame): DataFrame = _df
 }
