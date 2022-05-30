@@ -38,6 +38,13 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   override def transform(_df: DataFrame): DataFrame = {
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
+    val modelPath = getmodelPath
+    val branch = getKeyword("branch").getOrElse("main")
+    val isNewVersion = getKeyword("newVersion").getOrElse("false")
+    val branchPath = "/" + branch
+    val versionPath = "/" + isNewVersion match {
+      case "true" =>
+    }
     partitionBy match {
       case Some(partitions) if isAllColsExists(partitions, _df) =>
         dfw.partitionBy(partitions: _*).save(absolutePath)
