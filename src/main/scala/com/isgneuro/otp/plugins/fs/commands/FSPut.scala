@@ -96,7 +96,6 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       case _ => dfw.save(dataPath)
     }
     if (branchStatus == "init") {
-
     }
     _df
   }
