@@ -89,6 +89,18 @@ class FSPutTest extends CommandTest {
     execute(commandWriteFile)
   }
 
+  test("Write to some branch newVersion=false") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=resistors newVersion=false""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write to some branch newVersion=true") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=resistors newVersion=true""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
   test("Write parquet to default branch when branch is init") {
     val branchConfig = new BranchConfig
     val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
