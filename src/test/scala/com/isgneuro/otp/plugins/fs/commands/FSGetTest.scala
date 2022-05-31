@@ -33,6 +33,30 @@ class FSGetTest extends CommandTest {
     (10, "rty")
   ).toDF("a", "b")
 
+  test ("Read files by default") {
+    val simpleQuery = SimpleQuery("""model=electronic""")
+    val commandWriteFile = new FSGet(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Read files with defined branch") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=resistors""")
+    val commandWriteFile = new FSGet(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Read files with defined version") {
+    val simpleQuery = SimpleQuery("""model=electronic version=1""")
+    val commandWriteFile = new FSGet(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Read files with defined branch and version") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=resistors version=1""")
+    val commandWriteFile = new FSGet(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
   test("Read files in parquet format") {
     df.show()
     val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath
@@ -41,7 +65,6 @@ class FSGetTest extends CommandTest {
     val commandReadFile = new FSGet(simpleQuery, utils)
     val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
     val expectedCols = Array("a", "b")
-
     assert(actual.columns.sameElements(expectedCols))
     assert(actual.except(df).count() == 0)
   }
