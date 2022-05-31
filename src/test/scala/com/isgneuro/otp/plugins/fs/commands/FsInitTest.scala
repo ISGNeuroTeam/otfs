@@ -28,8 +28,6 @@ class FsInitTest extends CommandTest {
     val modelConfig: Config = ConfigFactory.parseFile(modelConfFile)
     assert(modelConfig.getString("model") == "electronic")
     assert(modelConfig.getString("format") == "parquet")
-    assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("latestversion") == "1")
     //assert(modelConfig.getStringList("branches") == Array[String]("main").toIterable.asJava)
     val mainBranchPath = modelPath + "/main"
     val mainBranchDir = new File(mainBranchPath)
@@ -38,6 +36,8 @@ class FsInitTest extends CommandTest {
     assert(mainBranchConfFile.exists())
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
+    assert(modelConfig.getString("mode") == "onewrite")
+    assert(modelConfig.getString("latestversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())
@@ -59,8 +59,6 @@ class FsInitTest extends CommandTest {
     val modelConfig: Config = ConfigFactory.parseFile(modelConfFile)
     assert(modelConfig.getString("model") == "economic")
     assert(modelConfig.getString("format") == "csv")
-    assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("latestversion") == "1")
     //assert(modelConfig.getStringList("branches") == Array[String]("main").toIterable.asJava)
     val mainBranchPath = modelPath + "/main"
     val mainBranchDir = new File(mainBranchPath)
@@ -69,6 +67,8 @@ class FsInitTest extends CommandTest {
     assert(mainBranchConfFile.exists())
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
+    assert(modelConfig.getString("mode") == "onewrite")
+    assert(modelConfig.getString("latestversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())

@@ -1,5 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.lit
@@ -56,6 +57,71 @@ class FSPutTest extends CommandTest {
     val actual = spark.read.format("parquet").load(path).toJSON.collect().mkString("[\n",",\n","\n]")
     val expected = dataset
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
+  }
+
+  test("Write to main by default") {
+    val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write to main") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write to main newVersion=true"){
+    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newVersion=true""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write to main newVersion=false"){
+    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newVersion=false""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write to unknown branch") {
+    val simpleQuery = SimpleQuery("""model=electronic branch=somebranch format=parquet""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Write parquet to default branch when branch is init") {
+    val branchConfig = new BranchConfig
+    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    assert(status == "init")
+    val lastVersion = branchConfig.getLatestVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + lastVersion
+    val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+    assert(new File(path).exists())
+    val actual = spark.read.format("parquet").load(path).toJSON.collect().mkString("[\n",",\n","\n]")
+    val expected = dataset
+    assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
+  }
+
+  //test write to default branch when status hasData, need checking assert status=hasData from config
+  test("Write parquet to default branch when branch already has data") {
+    val branchConfig = new BranchConfig
+    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    assert(status == "hasData")
+    val lastVersion = branchConfig.getLatestVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + (lastVersion + 1)
+    val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
+    val commandWriteFile = new FSPut(simpleQuery, utils)
+    execute(commandWriteFile)
+    assert(new File(path).exists())
+    val actual = spark.read.format("parquet").load(path).toJSON.collect().mkString("[\n",",\n","\n]")
+    val expected = dataset
+    assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
+  }
+
+  test("Write parquet to not created branch") {
+    val simpleQuery = SimpleQuery("""model=electronic format=parquet branch=""")
   }
 
   test("Write json") {

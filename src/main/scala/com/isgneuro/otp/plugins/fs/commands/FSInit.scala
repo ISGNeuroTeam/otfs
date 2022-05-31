@@ -42,7 +42,6 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
           val branches: java.lang.Iterable[String] = Array("main").toIterable.asJava
           val modelCfgContents = Array(ConfigFactory.empty.withValue("model", ConfigValueFactory.fromAnyRef(model))
             .withValue("format", ConfigValueFactory.fromAnyRef(format))
-            .withValue("mode", ConfigValueFactory.fromAnyRef("onewrite"))
             .withValue("branches", ConfigValueFactory.fromIterable(branches))
           )
           for (content <- modelCfgContents) {
@@ -52,6 +51,8 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
           val mainBranchConfig = new MainBranchConfig
           mainBranchConfig.create(modelPath)
           val mainCfgContent = ConfigFactory.empty.withValue("branchname", ConfigValueFactory.fromAnyRef("main"))
+            .withValue("mode", ConfigValueFactory.fromAnyRef("onewrite"))
+            .withValue("status", ConfigValueFactory.fromAnyRef("init"))
             .withValue("latestversion", ConfigValueFactory.fromAnyRef("1"))
           mainBranchConfig.addContent(mainCfgContent.root().render(ConfigRenderOptions.concise()))
           //result info table
