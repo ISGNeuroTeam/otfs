@@ -93,7 +93,7 @@ class FSPutTest extends CommandTest {
     val branchConfig = new BranchConfig
     val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
     assert(status == "init")
-    val lastVersion = branchConfig.getLatestVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
     val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + lastVersion
     val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
@@ -109,7 +109,7 @@ class FSPutTest extends CommandTest {
     val branchConfig = new BranchConfig
     val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
     assert(status == "hasData")
-    val lastVersion = branchConfig.getLatestVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
     val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + (lastVersion + 1)
     val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
     val commandWriteFile = new FSPut(simpleQuery, utils)

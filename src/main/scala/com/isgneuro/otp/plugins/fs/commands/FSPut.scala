@@ -56,17 +56,21 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   override def transform(_df: DataFrame): DataFrame = {
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
+    val modelExists = new File(modelPath).exists
+    if(!modelExists)
+      sendError("Model " + model + " doesn't exists.")
     val branchText = getKeyword("branch").getOrElse("main")
     if (branchText != "main") {
-      val branchExists = new File(modelPath + "/" + branchText).exists()
-      branch = branchExists match {
-        case true => branchText
-        case false => sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
+      val branchExists = new File(modelPath + "/" + branchText).exists
+      branch = if (branchExists) {
+        branchText
+      } else {
+        sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
       }
     }
     val branchConfig = new BranchConfig
     val branchPath = "/" + branch
-    val lastVersion = branchConfig.getLatestVersion(modelPath, branch)
+    val lastVersion = branchConfig.getLastVersion(modelPath, branch)
     val branchStatus = branchConfig.getStatus(modelPath, branch)
     val isNewVersion = getKeyword("newVersion").getOrElse(
       branch match {

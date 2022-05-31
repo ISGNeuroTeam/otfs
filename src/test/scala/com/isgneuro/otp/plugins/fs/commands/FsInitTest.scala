@@ -37,7 +37,7 @@ class FsInitTest extends CommandTest {
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
     assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("latestversion") == "1")
+    assert(modelConfig.getString("lastversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())
@@ -68,7 +68,7 @@ class FsInitTest extends CommandTest {
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
     assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("latestversion") == "1")
+    assert(modelConfig.getString("lastversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())

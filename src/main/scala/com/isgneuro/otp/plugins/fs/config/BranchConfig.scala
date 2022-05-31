@@ -15,10 +15,10 @@ class BranchConfig extends FSConfig {
     createFile(configFile)
   }
 
-  def getLatestVersion(modelPath: String, branch: String): String = {
+  def getLastVersion(modelPath: String, branch: String): String = {
     val configFile = new File(modelPath + "/" + branch + "/branch.conf")
     val config: Config = ConfigFactory.parseFile(configFile)
-    config.getString("latestversion")
+    config.getString("lastversion")
   }
 
   def getStatus(modelPath: String, branch: String): String = {

@@ -34,7 +34,6 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
         val version1Dir = new File(version1Path)
         val version1CreateSucc = version1Dir.mkdirs()
         if (version1CreateSucc) {
-          val model = getKeyword("model").get
           val format = getKeyword("format").getOrElse("parquet")
           //create model config
           val modelConfig = new ModelConfig
@@ -53,7 +52,7 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
           val mainCfgContent = ConfigFactory.empty.withValue("branchname", ConfigValueFactory.fromAnyRef("main"))
             .withValue("mode", ConfigValueFactory.fromAnyRef("onewrite"))
             .withValue("status", ConfigValueFactory.fromAnyRef("init"))
-            .withValue("latestversion", ConfigValueFactory.fromAnyRef("1"))
+            .withValue("lastversion", ConfigValueFactory.fromAnyRef("1"))
           mainBranchConfig.addContent(mainCfgContent.root().render(ConfigRenderOptions.concise()))
           //result info table
           import spark.implicits._
