@@ -17,7 +17,7 @@ class FsInitTest extends CommandTest {
       .getOrCreate()
 
   test("Test 0. Create new model with default files format") {
-    val simpleQuery = SimpleQuery("model=electronic")
+    val simpleQuery = SimpleQuery("model=transport")
     val initCommand = new FSInit(simpleQuery, utils)
     val actual = execute(initCommand)
     val modelPath = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic"
@@ -36,8 +36,8 @@ class FsInitTest extends CommandTest {
     assert(mainBranchConfFile.exists())
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
-    assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("lastversion") == "1")
+    assert(mainBranchConfig.getString("mode") == "onewrite")
+    assert(mainBranchConfig.getString("lastversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())
@@ -67,8 +67,8 @@ class FsInitTest extends CommandTest {
     assert(mainBranchConfFile.exists())
     val mainBranchConfig: Config = ConfigFactory.parseFile(mainBranchConfFile)
     assert(mainBranchConfig.getString("branchname") == "main")
-    assert(modelConfig.getString("mode") == "onewrite")
-    assert(modelConfig.getString("lastversion") == "1")
+    assert(mainBranchConfig.getString("mode") == "onewrite")
+    assert(mainBranchConfig.getString("lastversion") == "1")
     val version1Path = mainBranchPath + "/1"
     val version1Dir = new File(version1Path)
     assert(version1Dir.exists())
