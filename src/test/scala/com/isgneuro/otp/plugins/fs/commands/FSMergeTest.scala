@@ -11,4 +11,22 @@ class FSMergeTest extends CommandTest{
     val commandWriteFile = new FSMerge(simpleQuery, utils)
     execute(commandWriteFile)
   }
+
+  test("Merge with outbranchversion defining") {
+    val simpleQuery = SimpleQuery("""model=electronic outbranch=resistors inbranch=main outbranchversion=1""")
+    val commandWriteFile = new FSMerge(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Merge with inbranchversion defining") {
+    val simpleQuery = SimpleQuery("""model=electronic outbranch=resistors inbranch=main inbranchversion=1""")
+    val commandWriteFile = new FSMerge(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
+
+  test("Merge with out- and inbranchversion defining") {
+    val simpleQuery = SimpleQuery("""model=electronic outbranch=resistors inbranch=main outbranchversion=1 inbranchversion=1""")
+    val commandWriteFile = new FSMerge(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
 }

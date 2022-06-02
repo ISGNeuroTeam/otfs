@@ -52,15 +52,14 @@ class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
     val outLastVersion = outBranchConfig.getLastVersion(modelPath, outBranch)
     val outVersion = getKeyword("outbranchversion").getOrElse(outLastVersion)
     val outDataPath = modelPath + "/" + outBranch + "/" + outVersion
-    val mergingData: DataFrame = _df
-      //dfReader.load(outDataPath)
+    val mergingData: DataFrame = dfReader.load(outDataPath)
     val inBranchConfig = new BranchConfig
     val inLastVersion = inBranchConfig.getLastVersion(modelPath, inBranch)
     val inVersion = getKeyword("inbranchversion").getOrElse(inLastVersion)
     val inDataPath =  modelPath + "/" + inBranch + "/" + inVersion
     val dfWriter = createDfWriter(mergingData)
     dfWriter.save(inDataPath)
-    mergingData.withColumn("outbranch", col(outBranch)).withColumn("outbranchversion", col(outVersion))
-      .withColumn("inbranch", col(inBranch)).withColumn("inbranchversion", col(inVersion))
+    mergingData.withColumn("outBranch", format_string(outBranch)).withColumn("outbranchversion", format_string(outVersion))
+      .withColumn("inbranch", format_string(inBranch)).withColumn("inbranchversion", format_string(inVersion))
   }
 }
