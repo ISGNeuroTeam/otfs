@@ -17,7 +17,7 @@ class FsInitTest extends CommandTest {
       .getOrCreate()
 
   test("Test 0. Create new model with default files format") {
-    val simpleQuery = SimpleQuery("model=transport")
+    val simpleQuery = SimpleQuery("model=tempModel")
     val initCommand = new FSInit(simpleQuery, utils)
     val actual = execute(initCommand)
     val modelPath = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic"
