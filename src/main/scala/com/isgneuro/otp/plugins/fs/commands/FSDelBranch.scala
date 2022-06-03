@@ -30,32 +30,41 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
     }
     val branchPath = modelPath + "/" + branch
     val branchDirFile = new File(branchPath)
-    if (branchDirFile.isDirectory) {
-      val delResults = new ArrayBuffer[BranchDelResult]
-      val branchConfig = new BranchConfig
-      val childBranches = branchConfig.getChildBranches(modelPath, branch)
-      if (childBranches.nonEmpty) {
-        val childDelResults = for {
-          br<-childBranches
-          brDirFile = new File(modelPath + "/" + br)
-          brDirDeleted = deleteDirectory(brDirFile)
-          workMessage = if(brDirDeleted) {"Deleting is successful"} else {"Deleting is failed"}
-        } yield BranchDelResult(br, model, workMessage)
-        if (childDelResults.map(_.workMessage).contains("Deleting is failed"))
-          sendError("Any child branches in branch " + branch + " not deleted")
-        delResults ++= childDelResults
-      }
-      val branchDirectory = new Directory(branchDirFile)
-      val branchDirDeleted = branchDirectory.deleteRecursively()
-      if (branchDirDeleted) {
-        import spark.implicits._
-        delResults += BranchDelResult(branch, model, "Deleting is successful")
-        delResults.toDF
+    if (branchDirFile.exists()) {
+      if (branchDirFile.isDirectory) {
+        val delResults = new ArrayBuffer[BranchDelResult]
+        val branchConfig = new BranchConfig
+        val childBranches = branchConfig.getChildBranches(modelPath, branch)
+        if (childBranches.nonEmpty) {
+          val childDelResults = for {
+            br <- childBranches
+            brDirFile = new File(modelPath + "/" + br)
+            brDirDeleted = deleteDirectory(brDirFile)
+            workMessage = if (brDirDeleted) {
+              "Deleting is successful"
+            } else {
+              "Deleting is failed"
+            }
+          } yield BranchDelResult(br, model, workMessage)
+          if (childDelResults.map(_.workMessage).contains("Deleting is failed"))
+            sendError("Any child branches in branch " + branch + " not deleted")
+          delResults ++= childDelResults
+        }
+        val branchDirectory = new Directory(branchDirFile)
+        val branchDirDeleted = branchDirectory.deleteRecursively()
+        if (branchDirDeleted) {
+          import spark.implicits._
+          delResults += BranchDelResult(branch, model, "Deleting is successful")
+          delResults.toDF
+        } else {
+          sendError("Directory for " + branch + " not deleted.")
+        }
       } else {
-        sendError("Directory for " + branch + " not deleted.")
+        sendError("Error: path to branch " + branch + " isn't directory.")
       }
-    } else {
-      sendError("Error: path to branch " + branch + " isn't directory.")
+    }
+    else {
+      sendError("Directory of branch " + branch + " isn't exists.")
     }
   }
 
@@ -65,4 +74,4 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
   }
 }
 
-case class BranchDelResult (name: String, model: String, workMessage: String)
+case class BranchDelResult(name: String, model: String, workMessage: String)
