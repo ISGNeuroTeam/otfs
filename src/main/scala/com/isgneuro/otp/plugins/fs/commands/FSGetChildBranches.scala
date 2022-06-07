@@ -1,0 +1,107 @@
+package com.isgneuro.otp.plugins.fs.commands
+
+import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.internals.StructureInformer
+import com.isgneuro.otp.plugins.fs.model.Branch
+import com.isgneuro.otp.spark.OTLSparkSession
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.{col, udf}
+import ot.dispatcher.sdk.PluginUtils
+import ot.dispatcher.sdk.core.SimpleQuery
+
+import java.io.File
+import java.nio.file.{Files, Paths}
+import java.nio.file.attribute.BasicFileAttributes
+
+class FSGetChildBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInformer(sq, utils) with OTLSparkSession{
+
+  private var branch = ""
+
+  override def transform(_df: DataFrame): DataFrame = {
+    val showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
+    val showCreationDate = getLogicParamValue("showcreationdate")
+    val showLastUpdateDate = getLogicParamValue("showlastupdatedate")
+    val showLastVersionNum = getLogicParamValue("showlastversionnum")
+    val hasChildBranches = getLogicParamValue("haschildbranches")
+    val onlyEmpty = getLogicParamValue("onlyempty")
+    val onlyNonEmpty = getLogicParamValue("onlynonempty")
+    if (onlyEmpty == "true" && onlyEmpty == onlyNonEmpty) {
+      sendError("Error: equal values in opposite parameters onlyempty and onlynonempty. Define various values in these params or define only one param.")
+    }
+    val onlyWithChildBranches = getLogicParamValue("onlywithchildbranches")
+    val onlyWithoutChildBranches = getLogicParamValue("onlywithoutchildbranches")
+    if (onlyWithChildBranches == "true" && onlyWithChildBranches == onlyWithoutChildBranches) {
+      sendError("Error: equal values in opposite parameters onlyWithChildBranches and onlyWithoutChildBranches. Define various values in these params or define only one param.")
+    }
+    val showVersionsList = getLogicParamValue("showversionslist")
+    val modelPath = getmodelPath
+    val modelExists = new File(modelPath).exists
+    if(!modelExists)
+      sendError("Model " + model + " doesn't exists.")
+    val branchText = getKeyword("branch").getOrElse("main")
+    val branchExists = new File(modelPath + "/" + branchText).exists
+    branch = if (branchExists) {
+      branchText
+    } else {
+      sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
+    }
+    val branchPath = modelPath + "/" + branch
+    val branchDirFile = new File(branchPath)
+    if (branchDirFile.exists()) {
+      if (branchDirFile.isDirectory) {
+        val config = new BranchConfig
+        val allChildBranchNames = config.getChildBranches(modelPath, branch).getOrElse(Array[String]())
+        val modelDirectory = new File(modelPath)
+        var branchDirs: Array[File] = modelDirectory.listFiles.filter(f => f.isDirectory && allChildBranchNames.contains(f.getName))
+        if (onlyEmpty == "true") {
+          branchDirs = branchDirs.filter(dir => dir.listFiles.count(_.isDirectory) == 0 || dir.listFiles.filter(_.isDirectory).forall(_.listFiles.length == 0))
+        }
+        if (onlyNonEmpty == "true") {
+          branchDirs = branchDirs.filter(dataContainsIn)
+        }
+        if (onlyWithChildBranches == "true") {
+          branchDirs = branchDirs.filter(dir => childBranchesExistsIn(modelPath, dir.getName))
+        }
+        if (onlyWithoutChildBranches == "true") {
+          branchDirs = branchDirs.filter(dir => !childBranchesExistsIn(modelPath, dir.getName))
+        }
+        val childBranchNames: Array[String] = branchDirs.map(_.getName)
+        val childBranches = for {
+          br <- childBranchNames
+          parent = config.getParentBranch(modelPath, br).getOrElse("")
+        } yield Branch(br, parent)
+        import spark.implicits._
+        var branchesDf = childBranches.toSeq.toDF()
+        if (is(showVersionsList)) {
+          val versionsListUdf = udf((name: String) => {config.getVersionsList(modelPath, name).getOrElse(Array[String]()).mkString(",")})
+          branchesDf = branchesDf.withColumn("versions", versionsListUdf(col("name")))
+        }
+        if (is(showLastVersionNum)) {
+          val lastVersionUdf = udf((lvName: String) => {config.getLastVersion(modelPath, lvName).getOrElse("")})
+          branchesDf = branchesDf.withColumn("lastVersion", lastVersionUdf(col("name")))
+        }
+        if (is(showDataExistsInfo)) {
+          val isDataExistsUdf = udf((deName: String) => {getIsDataContainsText(modelPath, deName)})
+          branchesDf = branchesDf.withColumn("isDataExists", isDataExistsUdf(col("name")))
+        }
+        if (is(showCreationDate)) {
+          val creationDateUdf = udf((cdName: String) => {Files.readAttributes(Paths.get(modelPath + "/" + cdName), classOf[BasicFileAttributes]).creationTime().toString})
+          branchesDf = branchesDf.withColumn("creationDate", creationDateUdf(col("name")))
+        }
+        if (is(showLastUpdateDate)) {
+          val lastUpdateDateUdf = udf((udName: String) => {Files.getLastModifiedTime(Paths.get(modelPath + "/" + udName)).toString})
+          branchesDf = branchesDf.withColumn("lastUpdateDate", lastUpdateDateUdf(col("name")))
+        }
+        if (is(hasChildBranches)) {
+          val hasChildBranchesUdf = udf((hcName: String) => {getIsChildBranchesExistsText(modelPath, hcName)})
+          branchesDf = branchesDf.withColumn("hasChildBranches", hasChildBranchesUdf(col("name")))
+        }
+        branchesDf
+      } else {
+        sendError("Error: path to branch \" + branch + \" isn't directory.")
+      }
+    } else {
+      sendError("Directory of branch \" + branch + \" isn't exists.")
+    }
+  }
+}

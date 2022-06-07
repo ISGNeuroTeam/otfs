@@ -84,5 +84,4 @@ class FSGetBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInform
     }
     branchesDf
   }
-
 }
