@@ -2,11 +2,13 @@ package com.isgneuro.otp.plugins.fs.commands
 
 import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import com.isgneuro.otp.plugins.fs.internals.StructureInformer
+import com.isgneuro.otp.plugins.fs.model.Branch
 import com.isgneuro.otp.spark.OTLSparkSession
 import org.apache.spark.sql.DataFrame
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 import org.apache.spark.sql.functions._
+
 import java.io.File
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{Files, Paths}
@@ -84,5 +86,3 @@ class FSGetBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInform
   }
 
 }
-
-case class Branch(name: String, parent: String)
