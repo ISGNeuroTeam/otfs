@@ -15,16 +15,26 @@ class BranchConfig extends FSConfig {
     createFile(configFile)
   }
 
-  def getLastVersion(modelPath: String, branch: String): String = {
+  def getLastVersion(modelPath: String, branch: String): Option[String] = {
     val configFile = new File(modelPath + "/" + branch + "/branch.conf")
     val config: Config = ConfigFactory.parseFile(configFile)
-    config.getString("lastversion")
+    try {
+      val result = config.getString("lastversion")
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
   }
 
-  def getStatus(modelPath: String, branch: String): String = {
+  def getStatus(modelPath: String, branch: String): Option[String] = {
     val configFile = new File(modelPath + "/" + branch + "/branch.conf")
     val config: Config = ConfigFactory.parseFile(configFile)
-    config.getString("status")
+    try {
+      val result = config.getString("status")
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
   }
 
   def setStatus(modelPath: String, branch: String, status: String) = {
@@ -35,9 +45,36 @@ class BranchConfig extends FSConfig {
     //?
   }
 
-  def getChildBranches(modelPath: String, branch: String): Array[String] = {
+  def getParentBranch(modelPath: String, branch: String): Option[String] = {
     val configFile = new File(modelPath + "/" + branch + "/branch.conf")
     val config: Config = ConfigFactory.parseFile(configFile)
-    config.getStringList("childbranches").asScala.toArray
+    try {
+      val result = config.getString("parentbranch")
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
+  }
+
+  def getChildBranches(modelPath: String, branch: String): Option[Array[String]] = {
+    val configFile = new File(modelPath + "/" + branch + "/branch.conf")
+    val config: Config = ConfigFactory.parseFile(configFile)
+    try {
+      val result = config.getStringList("childbranches").asScala.toArray
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
+  }
+
+  def getVersionsList(modelPath: String, branch: String): Option[Array[String]] = {
+    val configFile = new File(modelPath + "/" + branch + "/branch.conf")
+    val config: Config = ConfigFactory.parseFile(configFile)
+    try {
+      val result = config.getStringList("versions").asScala.toArray
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
   }
 }

@@ -34,7 +34,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
       if (branchDirFile.isDirectory) {
         val delResults = new ArrayBuffer[BranchDelResult]
         val branchConfig = new BranchConfig
-        val childBranches = branchConfig.getChildBranches(modelPath, branch)
+        val childBranches = branchConfig.getChildBranches(modelPath, branch).getOrElse(Array[String]())
         if (childBranches.nonEmpty) {
           val childDelResults = for {
             br <- childBranches

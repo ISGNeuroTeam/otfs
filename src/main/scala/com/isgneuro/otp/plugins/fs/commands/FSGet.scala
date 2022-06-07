@@ -34,7 +34,7 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with
       }
     }
     val branchConfig = new BranchConfig
-    val lastVersion = branchConfig.getLastVersion(modelPath, branch)
+    val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")
     val version = getKeyword("version").getOrElse(lastVersion)
     val dataPath = modelPath + "/" + branch + "/" + version
     dfReader.load(dataPath)

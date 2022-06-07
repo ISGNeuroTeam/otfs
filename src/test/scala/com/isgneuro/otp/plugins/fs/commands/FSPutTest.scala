@@ -103,9 +103,9 @@ class FSPutTest extends CommandTest {
 
   test("Write parquet to default branch when branch is init") {
     val branchConfig = new BranchConfig
-    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main").getOrElse("")
     assert(status == "init")
-    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main").getOrElse("1")
     val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + lastVersion
     val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
@@ -119,9 +119,9 @@ class FSPutTest extends CommandTest {
   //test write to default branch when status hasData, need checking assert status=hasData from config
   test("Write parquet to default branch when branch already has data") {
     val branchConfig = new BranchConfig
-    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val status = branchConfig.getStatus("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main").getOrElse("")
     assert(status == "hasData")
-    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main")
+    val lastVersion = branchConfig.getLastVersion("file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic", "main").getOrElse("1")
     val path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/electronic/main/" + (lastVersion + 1)
     val simpleQuery = SimpleQuery("""model=electronic format=parquet""")
     val commandWriteFile = new FSPut(simpleQuery, utils)

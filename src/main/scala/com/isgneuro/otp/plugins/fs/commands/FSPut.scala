@@ -70,8 +70,8 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     }
     val branchConfig = new BranchConfig
     val branchPath = "/" + branch
-    val lastVersion = branchConfig.getLastVersion(modelPath, branch)
-    val branchStatus = branchConfig.getStatus(modelPath, branch)
+    val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")
+    val branchStatus = branchConfig.getStatus(modelPath, branch).getOrElse()
     val isNewVersion = getKeyword("newVersion").getOrElse(
       branch match {
         case "main" => if(branchStatus == "init") "false" else {"true"}

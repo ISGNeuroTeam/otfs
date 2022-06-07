@@ -49,12 +49,12 @@ class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
       .option("header", "true")
     val dfReader = if (format == "csv") commonReader.option("inferSchema", isInferSchema) else commonReader
     val outBranchConfig = new BranchConfig
-    val outLastVersion = outBranchConfig.getLastVersion(modelPath, outBranch)
+    val outLastVersion = outBranchConfig.getLastVersion(modelPath, outBranch).getOrElse("1")
     val outVersion = getKeyword("outbranchversion").getOrElse(outLastVersion)
     val outDataPath = modelPath + "/" + outBranch + "/" + outVersion
     val mergingData: DataFrame = dfReader.load(outDataPath)
     val inBranchConfig = new BranchConfig
-    val inLastVersion = inBranchConfig.getLastVersion(modelPath, inBranch)
+    val inLastVersion = inBranchConfig.getLastVersion(modelPath, inBranch).getOrElse("1")
     val inVersion = getKeyword("inbranchversion").getOrElse(inLastVersion)
     val inDataPath =  modelPath + "/" + inBranch + "/" + inVersion
     val dfWriter = createDfWriter(mergingData)
