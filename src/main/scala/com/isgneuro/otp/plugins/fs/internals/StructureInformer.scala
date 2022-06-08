@@ -1,12 +1,40 @@
 package com.isgneuro.otp.plugins.fs.internals
 
 import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.model.Branch
+import com.isgneuro.otp.spark.OTLSparkSession
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.{col, udf}
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
+import java.nio.file.{Files, Paths}
+import java.nio.file.attribute.BasicFileAttributes
 
-class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils){
+class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
+
+  protected var showVersionsList = "false"
+
+  protected var showDataExistsInfo = "false"
+
+  protected var showCreationDate = "false"
+
+  protected var showLastUpdateDate = "false"
+
+  protected var showLastVersionNum = "false"
+
+  protected var hasChildBranches = "false"
+
+  protected var onlyEmpty = "false"
+
+  protected var onlyNonEmpty = "false"
+
+  protected var onlyWithChildBranches = "false"
+
+  protected var onlyWithoutChildBranches = "false"
+
+  protected val config = new BranchConfig
 
   private val allowedLogicParamValues = Array("true", "false")
 
@@ -43,5 +71,56 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
     } else {
       sendError("Checking file on directory properties.")
     }
+  }
+
+  protected def getBranchDirs(branchDirCandids: Array[File]): Array[File] = {
+    if (onlyEmpty == "true") {
+      branchDirCandids.filter(dir => dir.listFiles.count(_.isDirectory) == 0 || dir.listFiles.filter(_.isDirectory).forall(_.listFiles.length == 0))
+    } else if (onlyNonEmpty == "true") {
+      branchDirCandids.filter(dataContainsIn)
+    } else if (onlyWithChildBranches == "true") {
+      branchDirCandids.filter(dir => childBranchesExistsIn(modelPath, dir.getName))
+    } else if (onlyWithoutChildBranches == "true") {
+      branchDirCandids.filter(dir => !childBranchesExistsIn(modelPath, dir.getName))
+    } else
+      branchDirCandids
+  }
+
+  protected def createBranchesDataframe(branchNames: Array[String]): DataFrame = {
+    val branches = for {
+      br <- branchNames
+      parent = config.getParentBranch(modelPath, br).getOrElse("")
+    } yield Branch(br, parent)
+    import spark.implicits._
+    branches.toSeq.toDF()
+  }
+
+  protected def completeBranchesDataframe(branchesDf: DataFrame): DataFrame = {
+    var branches = branchesDf
+    if (is(showVersionsList)) {
+      val versionsListUdf = udf((name: String) => {config.getVersionsList(modelPath, name).getOrElse(Array[String]()).mkString(",")})
+      branches = branches.withColumn("versions", versionsListUdf(col("name")))
+    }
+    if (is(showLastVersionNum)) {
+      val lastVersionUdf = udf((lvName: String) => {config.getLastVersion(modelPath, lvName).getOrElse("")})
+      branches = branches.withColumn("lastVersion", lastVersionUdf(col("name")))
+    }
+    if (is(showDataExistsInfo)) {
+      val isDataExistsUdf = udf((deName: String) => {getIsDataContainsText(modelPath, deName)})
+      branches = branches.withColumn("isDataExists", isDataExistsUdf(col("name")))
+    }
+    if (is(showCreationDate)) {
+      val creationDateUdf = udf((cdName: String) => {Files.readAttributes(Paths.get(modelPath + "/" + cdName), classOf[BasicFileAttributes]).creationTime().toString})
+      branches = branches.withColumn("creationDate", creationDateUdf(col("name")))
+    }
+    if (is(showLastUpdateDate)) {
+      val lastUpdateDateUdf = udf((udName: String) => {Files.getLastModifiedTime(Paths.get(modelPath + "/" + udName)).toString})
+      branches = branches.withColumn("lastUpdateDate", lastUpdateDateUdf(col("name")))
+    }
+    if (is(hasChildBranches)) {
+      val hasChildBranchesUdf = udf((hcName: String) => {getIsChildBranchesExistsText(modelPath, hcName)})
+      branches = branches.withColumn("hasChildBranches", hasChildBranchesUdf(col("name")))
+    }
+    branches
   }
 }

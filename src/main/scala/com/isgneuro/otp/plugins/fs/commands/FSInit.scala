@@ -4,7 +4,7 @@ import scala.collection.JavaConverters._
 import com.isgneuro.otp.plugins.fs.config.{MainBranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
-import org.apache.spark.sql.{DataFrame}
+import org.apache.spark.sql.DataFrame
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 import com.typesafe.config.{ConfigFactory, ConfigRenderOptions, ConfigValueFactory}
@@ -14,8 +14,6 @@ import java.io.File
 class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession {
 
   override def transform(_df: DataFrame): DataFrame = {
-    //get path to new model dir
-    val modelPath = getmodelPath
     //create new model dir
     val modelDir = new File(modelPath)
     val dirAlreadyExists = modelDir.exists()

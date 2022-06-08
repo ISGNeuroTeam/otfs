@@ -12,22 +12,10 @@ import scala.collection.mutable.ArrayBuffer
 import scala.reflect.io.Directory
 
 class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
-  private var branch = "main"
 
   override def transform(_df: DataFrame): DataFrame = {
-    val modelPath = getmodelPath
-    val modelExists = new File(modelPath).exists
-    if(!modelExists)
-      sendError("Model " + model + " doesn't exists.")
-    val branchText = getKeyword("branch").getOrElse("main")
-    if (branchText != "main") {
-      val branchExists = new File(modelPath + "/" + branchText).exists
-      branch = if (branchExists) {
-        branchText
-      } else {
-        sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
-      }
-    }
+    checkModelExisting
+    val branch = extractBranchName("branch")
     val branchPath = modelPath + "/" + branch
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {

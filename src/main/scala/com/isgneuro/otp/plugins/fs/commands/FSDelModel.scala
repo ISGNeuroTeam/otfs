@@ -11,10 +11,7 @@ import scala.reflect.io.Directory
 
 class FSDelModel(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
   override def transform(_df: DataFrame): DataFrame = {
-    val modelPath = getmodelPath
-    val modelExists = new File(modelPath).exists
-    if(!modelExists)
-      sendError("Model " + model + " doesn't exists.")
+    checkModelExisting
     val modelFile = new File(modelPath)
     if (modelFile.exists()) {
       if (modelFile.isDirectory) {

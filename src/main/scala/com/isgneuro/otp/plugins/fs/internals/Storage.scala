@@ -26,7 +26,25 @@ class Storage(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, uti
   val requiredKeywords: Set[String] = Set("path")
   val optionalKeywords: Set[String] = Set("format")
 
-  def getmodelPath = fs + new File(basePath, model + "/").getAbsolutePath
+  val modelPath: String = fs + new File(basePath, model + "/").getAbsolutePath
+
+  def checkModelExisting = {
+    val modelExists = new File(modelPath).exists
+    if(!modelExists)
+      sendError("Model " + model + " doesn't exists.")
+  }
+
+  def extractBranchName(branchKeyword: String): String = {
+    val branchText = getKeyword(branchKeyword).getOrElse("main")
+    val branch = branchText
+    if (branchText != "main") {
+      val branchExists = new File(modelPath + "/" + branchText).exists
+      if (!branchExists) {
+        sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
+      }
+    }
+    branch
+  }
 
   override def transform(_df: DataFrame): DataFrame = _df
 }

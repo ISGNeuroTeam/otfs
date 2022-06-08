@@ -22,8 +22,6 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   private val partitionBy = getKeyword("partitionBy").map(_.split(",").map(_.trim))
 
-  private val modelPath = getmodelPath
-
   private var branch: String = "main"
 
   private def castNullColsToString(df: DataFrame): DataFrame = {
@@ -56,18 +54,8 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   override def transform(_df: DataFrame): DataFrame = {
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
-    val modelExists = new File(modelPath).exists
-    if(!modelExists)
-      sendError("Model " + model + " doesn't exists.")
-    val branchText = getKeyword("branch").getOrElse("main")
-    if (branchText != "main") {
-      val branchExists = new File(modelPath + "/" + branchText).exists
-      branch = if (branchExists) {
-        branchText
-      } else {
-        sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
-      }
-    }
+    checkModelExisting
+    branch = extractBranchName("branch")
     val branchConfig = new BranchConfig
     val branchPath = "/" + branch
     val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")

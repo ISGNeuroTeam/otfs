@@ -1,6 +1,5 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import com.isgneuro.otp.plugins.fs.internals.StructureInformer
 import com.isgneuro.otp.plugins.fs.model.Branch
 import com.isgneuro.otp.spark.OTLSparkSession
@@ -15,34 +14,18 @@ import java.nio.file.{Files, Paths}
 
 class FSGetParentBranch(sq: SimpleQuery, utils: PluginUtils) extends StructureInformer(sq, utils) with OTLSparkSession{
 
-  private var branch = ""
-
   override def transform(_df: DataFrame): DataFrame = {
-    val showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
-    val showCreationDate = getLogicParamValue("showcreationdate")
-    val showLastUpdateDate = getLogicParamValue("showlastupdatedate")
-    val showLastVersionNum = getLogicParamValue("showlastversionnum")
-    val showVersionsList = getLogicParamValue("showversionslist")
-    val modelPath = getmodelPath
-    val modelExists = new File(modelPath).exists
-    if(!modelExists)
-      sendError("Model " + model + " doesn't exists.")
-    val branchText = getKeyword("branch").getOrElse("main")
-    if (branchText != "main") {
-      val branchExists = new File(modelPath + "/" + branchText).exists
-      branch = if (branchExists) {
-        branchText
-      } else {
-        sendError("Branch " + branchText + " doesn't exists in model " + model + ". Use command fsbranch for new branch creation")
-      }
-    } else {
-      sendError("Main branch hasn't parent branches.")
-    }
+    showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
+    showCreationDate = getLogicParamValue("showcreationdate")
+    showLastUpdateDate = getLogicParamValue("showlastupdatedate")
+    showLastVersionNum = getLogicParamValue("showlastversionnum")
+    showVersionsList = getLogicParamValue("showversionslist")
+    checkModelExisting
+    val branch = extractBranchName("branch")
     val branchPath = modelPath + "/" + branch
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
-        val config = new BranchConfig
         val parentBranchName = config.getParentBranch(modelPath, branch).getOrElse("")
         val parentBranch = Seq(Branch(parentBranchName, config.getParentBranch(modelPath, parentBranchName).getOrElse("")))
         import spark.implicits._

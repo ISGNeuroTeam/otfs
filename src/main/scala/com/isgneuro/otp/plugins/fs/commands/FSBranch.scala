@@ -12,26 +12,13 @@ import java.io.File
 
 class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
 
-  private var fromBranch = "main"
-
   override def transform(_df: DataFrame): DataFrame = {
-    val modelPath = getmodelPath
-    val modelExists = new File(modelPath).exists
-    if(!modelExists)
-      sendError("Model " + model + " doesn't exists.")
+    checkModelExisting
     val branch = getKeyword("name") match {
       case Some(name) => name
       case None => sendError("branch name is not specified")
     }
-    val fromBranchText = getKeyword("from").getOrElse("main")
-    if (fromBranchText != "main") {
-      val fromBranchExists = new File(modelPath + "/" + fromBranchText).exists()
-      fromBranch = if (fromBranchExists) {
-        fromBranchText
-      } else {
-        sendError("Branch " + fromBranchText + " doesn't exists in model " + model + ".")
-      }
-    }
+    val fromBranch = extractBranchName("from")
     val branchPath = modelPath + "/" + branch
     val branchDir = new File(branchPath)
     val branchCreateSucc = branchDir.mkdirs()
