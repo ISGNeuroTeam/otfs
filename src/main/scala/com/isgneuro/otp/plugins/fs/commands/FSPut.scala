@@ -9,6 +9,7 @@ import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.PluginUtils
 
 import java.io.File
+import scala.collection.JavaConverters.asJavaIterableConverter
 
 class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
@@ -56,10 +57,10 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
     checkModelExisting
     branch = extractBranchName("branch")
-    val branchConfig = new BranchConfig
+    val branchConfig = new BranchConfig(modelPath, branch)
     val branchPath = "/" + branch
-    val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")
-    val branchStatus = branchConfig.getStatus(modelPath, branch).getOrElse()
+    val lastVersion = branchConfig.getLastVersion().getOrElse("1")
+    val branchStatus = branchConfig.getStatus().getOrElse()
     val isNewVersion = getKeyword("newVersion").getOrElse(
       branch match {
         case "main" => if(branchStatus == "init") "false" else {"true"}
@@ -88,6 +89,12 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       case _ => dfw.save(dataPath)
     }
     if (branchStatus == "init") {
+      branchConfig.resetConfig("status", "hasData")
+    }
+    if (isNewVersion == "true") {
+      val newVersion = (lastVersion.toInt + 1).toString
+      branchConfig.resetConfig("lastversion", newVersion)
+      branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
     }
     _df
   }

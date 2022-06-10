@@ -9,13 +9,13 @@ class FSGetParentBranchTest extends CommandTest {
 
   test("Get parent branch info with defined command param values") {
     val simpleQuery = SimpleQuery(
-      "model=electronic branch=resistors showdataexistsinfo=true showcreationdate=true showlastupdatedate=true showlastversionnum=true showversionslist=true")
+      "model=tempModel branch=transmitters showdataexistsinfo=true showcreationdate=true showlastupdatedate=true showlastversionnum=true showversionslist=true")
     val commandWriteFile = new FSGetParentBranch(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Get parent branch info with default command param values") {
-    val simpleQuery = SimpleQuery("model=electronic branch=resistors")
+    val simpleQuery = SimpleQuery("model=tempModel branch=resistors")
     val commandWriteFile = new FSGetParentBranch(simpleQuery, utils)
     execute(commandWriteFile)
   }

@@ -1,5 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import com.isgneuro.otp.plugins.fs.internals.StructureInformer
 import com.isgneuro.otp.plugins.fs.model.Branch
 import com.isgneuro.otp.spark.OTLSparkSession
@@ -26,16 +27,18 @@ class FSGetParentBranch(sq: SimpleQuery, utils: PluginUtils) extends StructureIn
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
-        val parentBranchName = config.getParentBranch(modelPath, branch).getOrElse("")
-        val parentBranch = Seq(Branch(parentBranchName, config.getParentBranch(modelPath, parentBranchName).getOrElse("")))
+        val config = new BranchConfig(modelPath, branch)
+        val parentBranchName = config.getParentBranch().getOrElse("")
+        val parentConfig = new BranchConfig(modelPath, parentBranchName)
+        val parentBranch = Seq(Branch(parentBranchName, parentConfig.getParentBranch().getOrElse("")))
         import spark.implicits._
         var parentBranchDf = parentBranch.toDF()
         if (is(showVersionsList)) {
-          val versionsListUdf = udf((name: String) => {config.getVersionsList(modelPath, name).getOrElse(Array[String]()).mkString(",")})
+          val versionsListUdf = udf((name: String) => {parentConfig.getVersionsList().getOrElse(Array[String]()).mkString(",")})
           parentBranchDf = parentBranchDf.withColumn("versions", versionsListUdf(col("name")))
         }
         if (is(showLastVersionNum)) {
-          val lastVersionUdf = udf((lvName: String) => {config.getLastVersion(modelPath, lvName).getOrElse("")})
+          val lastVersionUdf = udf((lvName: String) => {parentConfig.getLastVersion().getOrElse("")})
           parentBranchDf = parentBranchDf.withColumn("lastVersion", lastVersionUdf(col("name")))
         }
         if (is(showDataExistsInfo)) {

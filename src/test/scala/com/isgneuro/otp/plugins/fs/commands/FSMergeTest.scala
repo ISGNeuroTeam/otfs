@@ -7,7 +7,7 @@ class FSMergeTest extends CommandTest{
   val dataset: String = ""
 
   test("Merge") {
-    val simpleQuery = SimpleQuery("""model=electronic outbranch=resistors inbranch=main""")
+    val simpleQuery = SimpleQuery("""model=tempModel outbranch=resistors inbranch=main""")
     val commandWriteFile = new FSMerge(simpleQuery, utils)
     execute(commandWriteFile)
   }

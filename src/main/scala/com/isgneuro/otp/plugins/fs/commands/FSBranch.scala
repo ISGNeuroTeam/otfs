@@ -1,14 +1,14 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
-import com.typesafe.config.{ConfigFactory, ConfigRenderOptions, ConfigValueFactory}
 import org.apache.spark.sql.DataFrame
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
+import scala.collection.JavaConverters.asJavaIterableConverter
 
 class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
 
@@ -27,13 +27,18 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
       val version1Dir = new File(version1Path)
       val version1CreateSucc = version1Dir.mkdirs()
       if (version1CreateSucc){
-        val branchConfig = new BranchConfig
-        branchConfig.create(modelPath, branch)
-        val branchCfgContent = ConfigFactory.empty.withValue("branchname", ConfigValueFactory.fromAnyRef(branch))
-          .withValue("parentbranch", ConfigValueFactory.fromAnyRef(fromBranch))
-          .withValue("status", ConfigValueFactory.fromAnyRef("init"))
-          .withValue("lastversion", ConfigValueFactory.fromAnyRef("1"))
-        branchConfig.addContent(branchCfgContent.root().render(ConfigRenderOptions.concise()))
+        val branchConfig = new BranchConfig(modelPath, branch)
+        branchConfig.createConfig("name", branch)
+        branchConfig.createConfig("parentbranch", fromBranch)
+        branchConfig.createConfig("status", "init")
+        branchConfig.createConfig("lastversion", "1")
+        val versions: java.lang.Iterable[String] = Array("1").toIterable.asJava
+        branchConfig.createListConfig("versions", versions)
+        val branchArray = Array(branch).toIterable.asJava
+        val parentBranchConfig = new BranchConfig(modelPath, fromBranch)
+        parentBranchConfig.createOrAddToList("childbranches", branchArray)
+        val modelConfig = new ModelConfig(modelPath)
+        modelConfig.addToListConfig("branches", branchArray)
         import spark.implicits._
         val resultSeq = Seq(BranchInitResult(branch, model, branchPath, "Initialization is succcesfull"))
         resultSeq.toDF

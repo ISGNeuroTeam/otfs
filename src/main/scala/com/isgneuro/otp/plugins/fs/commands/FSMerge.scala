@@ -10,8 +10,6 @@ import ot.dispatcher.sdk.core.SimpleQuery
 
 class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession {
 
-  private val branchConfig = new BranchConfig
-
   private val isInferSchema: String = getKeyword("inferSchema").getOrElse("true")
 
   private def createDfWriter: DataFrame => DataFrameWriter[Row] =
@@ -40,7 +38,8 @@ class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
   }
 
   private def getBranchVersion(branch: String, branchVersionKeyword: String): String = {
-    val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")
+    val branchConfig = new BranchConfig(modelPath, branch)
+    val lastVersion = branchConfig.getLastVersion().getOrElse("1")
     getKeyword(branchVersionKeyword).getOrElse(lastVersion)
   }
 

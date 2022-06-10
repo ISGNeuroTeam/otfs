@@ -1,47 +1,35 @@
 package com.isgneuro.otp.plugins.fs.config
 
-import java.io.{File, FileOutputStream, FileWriter, PrintWriter}
+import com.typesafe.config.{ConfigFactory, ConfigRenderOptions, ConfigValue, ConfigValueFactory}
+
+import java.io.{File, FileOutputStream, PrintWriter}
+import java.util
 
 trait FSConfig {
   private var file: File = _
 
-  val allowedProps: Array[String]
+  //val allowedProps: Array[String]
 
-  protected def createFile(configFile: File) = {
-    if (!configFile.exists)
-      configFile.createNewFile()
-    file = configFile
-  }
-
-  def addContent(text: String) = {
+  protected def rewriteIterEntries(file: File, name: String, entries: util.List[String]): Some[Boolean] = {
+    val content = ConfigFactory.empty.withValue(name, ConfigValueFactory.fromIterable(entries))
     val writer = new PrintWriter(new FileOutputStream(file, true))
-    writer.write(text)
+    writer.write(content.root().render(ConfigRenderOptions.concise()))
     writer.write("\r\n")
     writer.close()
+    Some(true)
   }
 
-  def addEntries(entries: Map[String, String]) = {
-    for (e <- entries) {
-      addEntry(e._1, e._2)
-    }
+
+  protected def createConfigExecWork(name: String, configValue: ConfigValue, pathPart: String) = {
+    //for refactoring of config classes - delete duplicates of createConfigExec
   }
 
-  def addEntry(key: String, value: String) = {
-    if (allowedProps.contains(key)) {
-      val writer = new PrintWriter(file)
-      writer.write(key + "=" + value + "\r\n")
-      writer.close()
-    } else {
-      throw new IllegalArgumentException("Not allowed config property")
-    }
+  protected def resetConfig(name: String, value: String, pathPart: String) = {
+
   }
 
-  def addListEntry(key: String, values: Array[String]) = {
-    if (allowedProps.contains(key)) {
-      val writer = new FileWriter(file)
-      writer.write(key + "=[" + values.mkString(",") + "]")
-    } else {
-      throw new IllegalArgumentException("Not allowed config property")
-    }
+  protected def addToListConfig(name: String, values: java.lang.Iterable[String], pathPart: String) = {
+
   }
+
 }

@@ -1,5 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
+import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import com.isgneuro.otp.plugins.fs.internals.StructureInformer
 import com.isgneuro.otp.spark.OTLSparkSession
 import org.apache.spark.sql.DataFrame
@@ -33,7 +34,8 @@ class FSGetChildBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureI
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
-        val allChildBranchNames = config.getChildBranches(modelPath, branch).getOrElse(Array[String]())
+        val config = new BranchConfig(modelPath, branch)
+        val allChildBranchNames = config.getChildBranches().getOrElse(Array[String]())
         val modelDirectory = new File(modelPath)
         val branchDirs: Array[File] = getBranchDirs(modelDirectory.listFiles.filter(f => f.isDirectory && allChildBranchNames.contains(f.getName)))
         val childBranchNames: Array[String] = branchDirs.map(_.getName)

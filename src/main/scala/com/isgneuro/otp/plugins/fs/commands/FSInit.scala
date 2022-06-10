@@ -1,13 +1,12 @@
 package com.isgneuro.otp.plugins.fs.commands
 
 import scala.collection.JavaConverters._
-import com.isgneuro.otp.plugins.fs.config.{MainBranchConfig, ModelConfig}
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
 import org.apache.spark.sql.DataFrame
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
-import com.typesafe.config.{ConfigFactory, ConfigRenderOptions, ConfigValueFactory}
 
 import java.io.File
 
@@ -33,25 +32,20 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
         val version1CreateSucc = version1Dir.mkdirs()
         if (version1CreateSucc) {
           val format = getKeyword("format").getOrElse("parquet")
-          //create model config
-          val modelConfig = new ModelConfig
-          modelConfig.create(modelPath + "/")
           val branches: java.lang.Iterable[String] = Array("main").toIterable.asJava
-          val modelCfgContents = Array(ConfigFactory.empty.withValue("model", ConfigValueFactory.fromAnyRef(model))
-            .withValue("format", ConfigValueFactory.fromAnyRef(format))
-            .withValue("branches", ConfigValueFactory.fromIterable(branches))
-          )
-          for (content <- modelCfgContents) {
-            modelConfig.addContent(content.root().render(ConfigRenderOptions.concise()))
-          }
+          //create model config
+          val modelConfig = new ModelConfig(modelPath)
+          modelConfig.createConfig("model", model)
+          modelConfig.createConfig("format", format)
+          modelConfig.createListConfig("branches", branches)
           //create main config
-          val mainBranchConfig = new MainBranchConfig
-          mainBranchConfig.create(modelPath)
-          val mainCfgContent = ConfigFactory.empty.withValue("branchname", ConfigValueFactory.fromAnyRef("main"))
-            .withValue("mode", ConfigValueFactory.fromAnyRef("onewrite"))
-            .withValue("status", ConfigValueFactory.fromAnyRef("init"))
-            .withValue("lastversion", ConfigValueFactory.fromAnyRef("1"))
-          mainBranchConfig.addContent(mainCfgContent.root().render(ConfigRenderOptions.concise()))
+          val branchConfig = new BranchConfig(modelPath, "main")
+          branchConfig.createConfig("name", "main")
+          branchConfig.createConfig("mode", "onewrite")
+          branchConfig.createConfig("status", "init")
+          branchConfig.createConfig("lastversion", "1")
+          val versions: java.lang.Iterable[String] = Array("1").toIterable.asJava
+          branchConfig.createListConfig("versions", versions)
           //result info table
           import spark.implicits._
           val resultSeq = Seq(InitResult(model, modelPath, "Initialization is succcesfull"))

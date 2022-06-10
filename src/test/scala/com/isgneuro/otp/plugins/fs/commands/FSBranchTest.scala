@@ -7,7 +7,7 @@ class FSBranchTest extends CommandTest{
   val dataset: String = ""
 
   test("branch from main by default") {
-    val simpleQuery = SimpleQuery("name=resistors model=electronic")
+    val simpleQuery = SimpleQuery("name=testing model=tempModel")
     val branchCommand = new FSBranch(simpleQuery, utils)
     execute(branchCommand)
   }
@@ -19,7 +19,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from some branch") {
-    val simpleQuery = SimpleQuery("name=variants model=electronic from=resistors")
+    val simpleQuery = SimpleQuery("name=joins model=tempModel from=transistors")
     val branchCommand = new FSBranch(simpleQuery, utils)
     execute(branchCommand)
   }

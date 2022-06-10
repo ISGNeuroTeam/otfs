@@ -18,8 +18,8 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with
       .option("header", "true")
     val dfReader = if (format == "csv") commonReader.option("inferSchema", isInferSchema) else commonReader
     val branch = extractBranchName("branch")
-    val branchConfig = new BranchConfig
-    val lastVersion = branchConfig.getLastVersion(modelPath, branch).getOrElse("1")
+    val branchConfig = new BranchConfig(modelPath, branch)
+    val lastVersion = branchConfig.getLastVersion().getOrElse("1")
     val version = getKeyword("version").getOrElse(lastVersion)
     val dataPath = modelPath + "/" + branch + "/" + version
     dfReader.load(dataPath)

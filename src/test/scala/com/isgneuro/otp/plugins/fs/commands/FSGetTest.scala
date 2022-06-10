@@ -34,25 +34,25 @@ class FSGetTest extends CommandTest {
   ).toDF("a", "b")
 
   test ("Read files by default") {
-    val simpleQuery = SimpleQuery("""model=electronic""")
+    val simpleQuery = SimpleQuery("""model=tempModel""")
     val commandWriteFile = new FSGet(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Read files with defined branch") {
-    val simpleQuery = SimpleQuery("""model=electronic branch=resistors""")
+    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors""")
     val commandWriteFile = new FSGet(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Read files with defined version") {
-    val simpleQuery = SimpleQuery("""model=electronic version=1""")
+    val simpleQuery = SimpleQuery("""model=tempModel version=1""")
     val commandWriteFile = new FSGet(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Read files with defined branch and version") {
-    val simpleQuery = SimpleQuery("""model=electronic branch=resistors version=1""")
+    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors version=1""")
     val commandWriteFile = new FSGet(simpleQuery, utils)
     execute(commandWriteFile)
   }

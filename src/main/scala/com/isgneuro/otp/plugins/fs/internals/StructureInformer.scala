@@ -34,7 +34,7 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
 
   protected var onlyWithoutChildBranches = "false"
 
-  protected val config = new BranchConfig
+  //protected val config = new BranchConfig
 
   private val allowedLogicParamValues = Array("true", "false")
 
@@ -57,8 +57,8 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
   }
 
   protected def childBranchesExistsIn(modelPath: String, branch: String): Boolean = {
-    val branchConfig = new BranchConfig
-    branchConfig.getChildBranches(modelPath, branch).getOrElse(Array[String]()).length > 0
+    val branchConfig = new BranchConfig(modelPath, branch)
+    branchConfig.getChildBranches().getOrElse(Array[String]()).length > 0
   }
 
   protected def getIsDataContainsText(modelPath: String, branch: String): String = {
@@ -89,7 +89,8 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
   protected def createBranchesDataframe(branchNames: Array[String]): DataFrame = {
     val branches = for {
       br <- branchNames
-      parent = config.getParentBranch(modelPath, br).getOrElse("")
+      config = new BranchConfig(modelPath, br)
+      parent = config.getParentBranch().getOrElse("")
     } yield Branch(br, parent)
     import spark.implicits._
     branches.toSeq.toDF()
@@ -98,11 +99,11 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
   protected def completeBranchesDataframe(branchesDf: DataFrame): DataFrame = {
     var branches = branchesDf
     if (is(showVersionsList)) {
-      val versionsListUdf = udf((name: String) => {config.getVersionsList(modelPath, name).getOrElse(Array[String]()).mkString(",")})
+      val versionsListUdf = udf((name: String) => {new BranchConfig(modelPath, name).getVersionsList().getOrElse(Array[String]()).mkString(",")})
       branches = branches.withColumn("versions", versionsListUdf(col("name")))
     }
     if (is(showLastVersionNum)) {
-      val lastVersionUdf = udf((lvName: String) => {config.getLastVersion(modelPath, lvName).getOrElse("")})
+      val lastVersionUdf = udf((lvName: String) => {new BranchConfig(modelPath, lvName).getLastVersion().getOrElse("")})
       branches = branches.withColumn("lastVersion", lastVersionUdf(col("name")))
     }
     if (is(showDataExistsInfo)) {

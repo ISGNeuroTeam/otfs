@@ -1,6 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
 import org.apache.spark.sql.DataFrame
@@ -8,6 +8,7 @@ import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
+import scala.collection.JavaConverters.asJavaIterableConverter
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.io.Directory
 
@@ -21,8 +22,8 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
         val delResults = new ArrayBuffer[BranchDelResult]
-        val branchConfig = new BranchConfig
-        val childBranches = branchConfig.getChildBranches(modelPath, branch).getOrElse(Array[String]())
+        val branchConfig = new BranchConfig(modelPath, branch)
+        val childBranches = branchConfig.getChildBranches.getOrElse(Array[String]())
         if (childBranches.nonEmpty) {
           val childDelResults = for {
             br <- childBranches
@@ -38,9 +39,15 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
             sendError("Any child branches in branch " + branch + " not deleted")
           delResults ++= childDelResults
         }
+        val parentBranch = branchConfig.getParentBranch.getOrElse("")
+        val parentBranchConfig = new BranchConfig(modelPath, parentBranch)
         val branchDirectory = new Directory(branchDirFile)
         val branchDirDeleted = branchDirectory.deleteRecursively()
         if (branchDirDeleted) {
+          val delBranchNameArray = Array(branch).toIterable.asJava
+          parentBranchConfig.removeFromListConfig("childbranches", delBranchNameArray)
+          val modelConfig = new ModelConfig(modelPath)
+          modelConfig.removeFromListConfig("branches", delBranchNameArray)
           import spark.implicits._
           delResults += BranchDelResult(branch, model, "Deleting is successful")
           delResults.toDF

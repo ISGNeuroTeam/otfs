@@ -9,19 +9,19 @@ class FSGetChildBranchesTest extends CommandTest {
 
   test ("Get branches with defined command param values") {
     val simpleQuery = SimpleQuery(
-      "model=electronic branch=resistors showdataexistsinfo=true showcreationdate=true showlastupdatedate=true showlastversionnum=true haschildbranches=true showversionslist=true")
+      "model=tempModel branch=transistors showdataexistsinfo=true showcreationdate=true showlastupdatedate=true showlastversionnum=true haschildbranches=true showversionslist=true")
     val commandWriteFile = new FSGetChildBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test ("Get branches with default command param values") {
-    val simpleQuery = SimpleQuery("model=electronic branch=main")
+    val simpleQuery = SimpleQuery("model=tempModel branch=main")
     val commandWriteFile = new FSGetChildBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test ("Get branches with partially defined command param values") {
-    val simpleQuery = SimpleQuery("model=electronic branch=resistors showlastupdatedate=true showlastversionnum=true haschildbranches=true showversionslist=false")
+    val simpleQuery = SimpleQuery("model=tempModel branch=resistors showlastupdatedate=true showlastversionnum=true haschildbranches=true showversionslist=false")
     val commandWriteFile = new FSGetChildBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }
@@ -39,13 +39,13 @@ class FSGetChildBranchesTest extends CommandTest {
   }
 
   test("Get only with child branches") {
-    val simpleQuery = SimpleQuery("model=electronic branch=main showlastupdatedate=true showlastversionnum=true onlywithchildbranches=true")
+    val simpleQuery = SimpleQuery("model=tempModel branch=main showlastupdatedate=true showlastversionnum=true onlywithchildbranches=true")
     val commandWriteFile = new FSGetChildBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Get only without child branches") {
-    val simpleQuery = SimpleQuery("model=electronic branch=main showlastupdatedate=true showlastversionnum=true onlywithoutchildbranches=true")
+    val simpleQuery = SimpleQuery("model=tempModel branch=main showlastupdatedate=true showlastversionnum=true onlywithoutchildbranches=true")
     val commandWriteFile = new FSGetChildBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }
