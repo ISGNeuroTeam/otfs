@@ -11,4 +11,10 @@ class FSDelBranchTest extends CommandTest{
     val commandWriteFile = new FSDelBranch(simpleQuery, utils)
     execute(commandWriteFile)
   }
+
+  test("delete branch with many childs and deeping of childs") {
+    val simpleQuery = SimpleQuery("""model=tempModel branch=expo""")
+    val commandWriteFile = new FSDelBranch(simpleQuery, utils)
+    execute(commandWriteFile)
+  }
 }

@@ -13,13 +13,13 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from main") {
-    val simpleQuery = SimpleQuery("name=dividends model=economic from=main")
+    val simpleQuery = SimpleQuery("name=expo model=tempModel from=main")
     val branchCommand = new FSBranch(simpleQuery, utils)
     execute(branchCommand)
   }
 
   test("branch from some branch") {
-    val simpleQuery = SimpleQuery("name=joins model=tempModel from=transistors")
+    val simpleQuery = SimpleQuery("name=expoLevel3 model=tempModel from=expoLevel2_1")
     val branchCommand = new FSBranch(simpleQuery, utils)
     execute(branchCommand)
   }

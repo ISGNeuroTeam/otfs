@@ -44,12 +44,18 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   private def createNewVersionPlace(lastVersion: Int): Boolean = {
     val branchDir = modelPath + "/" + branch + "/"
-    val newVerDir = new File(branchDir + (lastVersion + 1).toString)
+    val versionText = (lastVersion + 1).toString
+    val newVerDir = new File(branchDir + versionText)
     val newVerDirExists = newVerDir.exists()
     if (newVerDirExists) {
-      sendError("Structure error: Version " + (lastVersion + 1).toString + " in branch " + branch + " in model " + model + " is exists, but there is no entry in branch conf file")
+      sendError("Structure error: Version " + (lastVersion + 1).toString + " in branch " + branch + " in model " + model + " is exists, but there is no entry in branch conf file.")
     } else {
-      newVerDir.mkdirs()
+      if (newVerDir.mkdirs()) {
+        log.info("Directory for version " + versionText + " in branch " + branch + " in model " + model + " created.")
+        true
+      } else {
+        sendError("Directory for version " + versionText + " in branch " + branch + " in model " + model + " not created.")
+      }
     }
   }
 
@@ -67,7 +73,7 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
         case _ => "false"
       }
     )
-    val versionPath = "/" + (isNewVersion match {
+    val versionText = isNewVersion match {
       case "true" =>
         if(createNewVersionPlace(lastVersion.toInt))
           (lastVersion.toInt + 1).toString
@@ -76,7 +82,8 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
           sendError("Writing to main branch always in new version.")
         else
           lastVersion
-    })
+    }
+    val versionPath = "/" + versionText
     val dataPath = modelPath + branchPath + versionPath
     partitionBy match {
       case Some(partitions) if isAllColsExists(partitions, _df) =>
@@ -88,13 +95,17 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
       case _ => dfw.save(dataPath)
     }
+    log.info("Data saved in model " + model + ", branch " + branch + ", version " + versionText + ".")
     if (branchStatus == "init") {
       branchConfig.resetConfig("status", "hasData")
+      log.debug("Status changed from init to hasData in branch " + branch + ".")
     }
     if (isNewVersion == "true") {
       val newVersion = (lastVersion.toInt + 1).toString
       branchConfig.resetConfig("lastversion", newVersion)
+      log.debug("Last version changed from " + lastVersion + " to " + versionText + " in branch " + branch + ".")
       branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
+      log.debug("Version " + versionText + " added to versions list of branch " + branch + ".")
     }
     _df
   }
