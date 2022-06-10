@@ -37,8 +37,7 @@ class FSGetChildBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureI
         val config = new BranchConfig(modelPath, branch)
         val allChildBranchNames = config.getChildBranches().getOrElse(Array[String]())
         val modelDirectory = new File(modelPath)
-        val branchDirs: Array[File] = getBranchDirs(modelDirectory.listFiles.filter(f => f.isDirectory && allChildBranchNames.contains(f.getName)))
-        val childBranchNames: Array[String] = branchDirs.map(_.getName)
+        val childBranchNames: Array[String] = getBranchNames(modelDirectory.listFiles.filter(f => f.isDirectory && allChildBranchNames.contains(f.getName)))
         val childBranches = createBranchesDataframe(childBranchNames)
         completeBranchesDataframe(childBranches)
       } else {

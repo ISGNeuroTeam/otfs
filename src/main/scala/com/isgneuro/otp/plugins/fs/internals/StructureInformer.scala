@@ -73,7 +73,12 @@ class StructureInformer(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq,
     }
   }
 
-  protected def getBranchDirs(branchDirCandids: Array[File]): Array[File] = {
+  protected def getBranchNames(branchDirCandids: Array[File]): Array[String] = {
+    val branchDirs = getBranchDirs(branchDirCandids)
+    branchDirs.map(_.getName)
+  }
+
+  private def getBranchDirs(branchDirCandids: Array[File]): Array[File] = {
     if (onlyEmpty == "true") {
       branchDirCandids.filter(dir => dir.listFiles.count(_.isDirectory) == 0 || dir.listFiles.filter(_.isDirectory).forall(_.listFiles.length == 0))
     } else if (onlyNonEmpty == "true") {
