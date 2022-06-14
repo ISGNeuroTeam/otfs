@@ -10,12 +10,6 @@ import java.io.File
 class FsInitTest extends CommandTest {
   val dataset: String = ""
 
-  private lazy val sparkSession: SparkSession =
-    SparkSession.builder()
-      .appName(this.getClass.getSimpleName)
-      .master("local")
-      .getOrCreate()
-
   test("Test 0. Create new model with default files format") {
     val simpleQuery = SimpleQuery("model=tempModel")
     val initCommand = new FSInit(simpleQuery, utils)

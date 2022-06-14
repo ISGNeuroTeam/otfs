@@ -4,23 +4,29 @@
 
 ```
 | fsget 
+  model=modelname
+  [branch=branchname]
+  [version=versionnum]
   [format=parquet | orc | json | csv] 
-path=/path/read/from
 ```
 
 #### Параметры
 
 _Обязательные параметры_:
 
-- **path** - путь к папке с файлами. Это
-  относительный путь от родительской папки, которая указывается в storage.path файла plugin.conf.
+- **model** - название модели.
 
 Опциональные параметры:
 
-- **format** - формат файла(ов). Допустимые значения: parquet, orc, csv, json. По умолчанию `format=parquet`.
+- **branch** -  Название ветки, из которой считываются данные. По умолчанию `branch=main`.
+
+- **version** -  Номер версии, из которой считываются данные. По умолчанию значение версии равно номеру последней существующей в ветке версии.
+
+- **format** - формат считываемых файлов. Допустимые значения: parquet, orc, json, csv. По
+  умолчанию `format=parquet`.
 
 #### Примеры запросов
 
 ```
-| fsget format=parquet path=demo_train
+| fsget model=somemodel branch=anybranch version=1 format=csv
 ```
