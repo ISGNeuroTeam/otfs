@@ -2,8 +2,16 @@ site_name: Аналитика в OTP
 nav:
   - OTFS:
       - Команды:
+          - FS Init: fsinit.md
+          - FS Branch: fsbranch.md
           - FS Get: fsget.md
           - FS Put: fsput.md
+          - FS Merge: fsmerge.md
+          - FS DelBranch: fsdelbranch.md
+          - FS DelModel: fsdelmodel.md
+          - FS GetBranches: fsgetbranches.md
+          - FS GetParentBranch: fsgetparentbranch.md
+          - FS GetChildBranches: fsgetchildbranches.md
           - Repartition: repartition.md
       - Конфигурация: config.md
       - Установка: install.md
