@@ -72,13 +72,13 @@ class FSPutTest extends CommandTest {
   }
 
   test("Write to main newVersion=true"){
-    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newVersion=true""")
+    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newversion=true""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Write to main newVersion=false"){
-    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newVersion=false""")
+    val simpleQuery = SimpleQuery("""model=electronic branch=main format=parquet newversion=false""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
     execute(commandWriteFile)
   }
@@ -90,13 +90,13 @@ class FSPutTest extends CommandTest {
   }
 
   test("Write to some branch newVersion=false") {
-    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors newVersion=false""")
+    val simpleQuery = SimpleQuery("""model=tempModel2 branch=expo newversion=false""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
     execute(commandWriteFile)
   }
 
   test("Write to some branch newVersion=true") {
-    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors newVersion=true""")
+    val simpleQuery = SimpleQuery("""model=tempModel2 branch=expo newversion=true""")
     val commandWriteFile = new FSPut(simpleQuery, utils)
     execute(commandWriteFile)
   }

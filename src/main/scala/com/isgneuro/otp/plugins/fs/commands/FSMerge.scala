@@ -47,7 +47,11 @@ class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
   private def getBranchVersion(branch: String, branchVersionKeyword: String): String = {
     val branchConfig = new BranchConfig(modelPath, branch)
     val lastVersion = branchConfig.getLastVersion().getOrElse("1")
-    getKeyword(branchVersionKeyword).getOrElse(lastVersion)
+    val result = getKeyword(branchVersionKeyword).getOrElse(lastVersion)
+    if (result > lastVersion) {
+      sendError("Version " + result + " doesn't exists in branch " + branch + ".")
+    }
+    result
   }
 
   private def getDataPath(branch: String, branchVersion: String): String = {

@@ -18,6 +18,11 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
       case Some(name) => name
       case None => sendError("branch name is not specified")
     }
+    val modelDirectory = new File(modelPath)
+    val existBranchNames = modelDirectory.listFiles().filter(_.isDirectory).map(_.getName)
+    if (existBranchNames.contains(branch)) {
+      sendError("Branch " + branch + " is already exists")
+    }
     val fromBranch = extractBranchName("from")
     val branchPath = modelPath + "/" + branch
     val branchDir = new File(branchPath)

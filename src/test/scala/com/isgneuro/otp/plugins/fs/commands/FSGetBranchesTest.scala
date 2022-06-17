@@ -15,7 +15,7 @@ class FSGetBranchesTest extends CommandTest {
   }
 
   test ("Get branches with default command param values") {
-    val simpleQuery = SimpleQuery("model=tempModel")
+    val simpleQuery = SimpleQuery("model=tempModel2")
     val commandWriteFile = new FSGetBranches(simpleQuery, utils)
     execute(commandWriteFile)
   }

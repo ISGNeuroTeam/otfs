@@ -53,6 +53,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
           modelConfig.removeFromListConfig("branches", delBranchNameArray)
           import spark.implicits._
           delResults += BranchDelResult(branch, model, "Deleting is successful")
+          log.debug("Added entry about " + branch + " to result.")
           log.info("Branch " + branch + " deleted with all child branches, all entries, including branch and it's dependencies, in config files removed.")
           delResults.toDF
         } else {
@@ -89,6 +90,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
       "Deleting is failed"
     }
     result += BranchDelResult(branch, model, workMessage)
+    log.debug("Added entry about " + branch + " to result.")
     result.toArray
   }
 

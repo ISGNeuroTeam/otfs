@@ -30,6 +30,7 @@ class FSGetBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInform
     checkModelExisting
     val modelDirectory = new File(modelPath)
     val branchNames: Array[String] = getBranchNames(modelDirectory.listFiles.filter(_.isDirectory))
+    log.debug("Defined branches: " + branchNames.mkString(",") + ".")
     val branches = createBranchesDataframe(branchNames)
     completeBranchesDataframe(branches)
   }

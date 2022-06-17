@@ -63,11 +63,15 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
     checkModelExisting
     branch = extractBranchName("branch")
+    log.debug("Defined branch: " + branch)
     val branchConfig = new BranchConfig(modelPath, branch)
     val branchPath = "/" + branch
+    log.debug("Defined branch path: " + branchPath)
     val lastVersion = branchConfig.getLastVersion().getOrElse("1")
+    log.debug("Defined last version: " + lastVersion)
     val branchStatus = branchConfig.getStatus().getOrElse()
-    val isNewVersion = getKeyword("newVersion").getOrElse(
+    log.debug("Defined branch status: " + branchStatus)
+    val isNewVersion = getKeyword("newversion").getOrElse(
       branch match {
         case "main" => if(branchStatus == "init") "false" else {"true"}
         case _ => "false"

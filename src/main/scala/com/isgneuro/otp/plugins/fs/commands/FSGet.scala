@@ -22,8 +22,12 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with
     val lastVersion = branchConfig.getLastVersion().getOrElse("1")
     val version = getKeyword("version").getOrElse(lastVersion)
     val dataPath = modelPath + "/" + branch + "/" + version
-    val result = dfReader.load(dataPath)
-    log.info("Data loaded from model " + model + ", branch " + branch + ", version " + version)
-    result
+    try {
+      val result = dfReader.load(dataPath)
+      log.info("Data loaded from model " + model + ", branch " + branch + ", version " + version)
+      result
+    } catch {
+      case e: Exception => sendError("Branch " + branch + ", version " + version + " doesn't exists or doesn't contains data")
+    }
   }
 }
