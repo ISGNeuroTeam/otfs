@@ -9,7 +9,6 @@
   inbranch=inbranchname
   [outbranchversion=outbranchversionnum]
   [inbranchverson=inbranchversionnum]
-  [format=parquet | orc | json | csv]
 ```
 
 #### Параметры
@@ -28,8 +27,6 @@ _Обязательные параметры_:
 
 - **inbranchversion** - номер версии ветки, в которую записываются данные.
 
-- **format** - формат файлов, в котором они будут считываться из одной ветки и записываться в другую. Допустимые значения: parquet, orc, json, csv. По
-  умолчанию `format=parquet`.
 #### Примеры запросов
 
 ```
