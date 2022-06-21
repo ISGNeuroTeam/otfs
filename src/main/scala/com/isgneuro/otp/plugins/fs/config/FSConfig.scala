@@ -8,8 +8,6 @@ import java.util
 trait FSConfig {
   private var file: File = _
 
-  //val allowedProps: Array[String]
-
   protected def rewriteIterEntries(file: File, name: String, entries: util.List[String]): Some[Boolean] = {
     val content = ConfigFactory.empty.withValue(name, ConfigValueFactory.fromIterable(entries))
     val writer = new PrintWriter(new FileOutputStream(file, true))

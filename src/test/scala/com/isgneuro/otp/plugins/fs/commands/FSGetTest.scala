@@ -20,6 +20,12 @@ class FSGetTest extends CommandTest {
 
   val initialDf: DataFrame = jsonToDf(dataset)
 
+  val appended: String = """[
+                           | {"a":"1","b":"2"},
+                           |{"a":"10","b":"20"},
+                           |{"a":"100","b":"200"}
+                           |]""".stripMargin
+
   private lazy val sparkSession: SparkSession =
     SparkSession.builder()
       .appName(this.getClass.getSimpleName)
@@ -34,101 +40,123 @@ class FSGetTest extends CommandTest {
   ).toDF("a", "b")
 
   test ("Read files by default") {
-    val simpleQuery = SimpleQuery("""model=tempModel""")
-    val commandWriteFile = new FSGet(simpleQuery, utils)
-    execute(commandWriteFile)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      val expectedCols = Array("a", "b")
+      assert(actual.columns.sameElements(expectedCols))
+      assert(actual.rdd.getNumPartitions == 3)
+      assert(actual.except(initialDf).count() == 0)
+    }
   }
 
   test("Read files with defined branch") {
-    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors""")
-    val commandWriteFile = new FSGet(simpleQuery, utils)
-    execute(commandWriteFile)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel branch=branch2""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      assert(actual.except(jsonToDf(appended)).count() == 0)
+    }
   }
 
   test("Read files with defined version") {
-    val simpleQuery = SimpleQuery("""model=tempModel version=1""")
-    val commandWriteFile = new FSGet(simpleQuery, utils)
-    execute(commandWriteFile)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel version=1""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      assert(actual.except(initialDf).count() == 0)
+    }
   }
 
   test("Read files with defined branch and version") {
-    val simpleQuery = SimpleQuery("""model=tempModel branch=resistors version=1""")
-    val commandWriteFile = new FSGet(simpleQuery, utils)
-    execute(commandWriteFile)
-  }
-
-  test("Read files in parquet format") {
-    df.show()
-    val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath
-    df.write.format("parquet").mode("overwrite").save(path)
-    val simpleQuery = SimpleQuery(""" format=parquet path=read_test_file_parquet """)
-    val commandReadFile = new FSGet(simpleQuery, utils)
-    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
-    val expectedCols = Array("a", "b")
-    assert(actual.columns.sameElements(expectedCols))
-    assert(actual.except(df).count() == 0)
-  }
-
-  test("Set default format as parquet if no format specified") {
-    df.show()
-    val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath
-    df.write.format("parquet").mode("overwrite").save(path)
-    val simpleQuery = SimpleQuery(""" path=read_test_file_parquet """)
-    val commandReadFile = new FSGet(simpleQuery, utils)
-    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
-    val expectedCols = Array("a", "b")
-
-    assert(actual.columns.sameElements(expectedCols))
-    assert(actual.except(df).count() == 0)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel branch=branch2 version=1""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      assert(actual.except(initialDf).count() == 0)
+    }
   }
 
   test("Infer schema if 'csv' format specified ") {
-    df.show()
-    val path = new File("src/test/resources/temp/read_test_file_csv").getAbsolutePath
-    df.write.format("csv").option("header", "true").mode("overwrite").save(path)
-    val simpleQuery = SimpleQuery(""" format=csv path=read_test_file_csv """)
-    val commandReadFile = new FSGet(simpleQuery, utils)
-    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
-    val expectedSchema = StructType(
-      List(
-        StructField("a", IntegerType),
-        StructField("b", StringType)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testcsvmodel inferSchema=true""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      val expectedSchema = StructType(
+        List(
+          StructField("a", IntegerType),
+          StructField("b", StringType)
+        )
       )
-    )
 
-    assert(actual.columns.sameElements(expectedSchema.map(_.name)))
-    assert(actual.schema.equals(expectedSchema))
-    assert(actual.except(df).count() == 0)
+      assert(actual.columns.sameElements(expectedSchema.map(_.name)))
+      assert(actual.schema.equals(expectedSchema))
+      assert(actual.except(initialDf).count() == 0)
+    }
   }
 
   test("Do not infer schema if 'csv' format specified and inferSchema=false") {
-    df.show()
-    val path = new File("src/test/resources/temp/read_test_file_csv").getAbsolutePath
-    df.write.format("csv").option("header", "true").mode("overwrite").save(path)
-    val simpleQuery = SimpleQuery(""" format=csv path=read_test_file_csv inferSchema=false""")
-    val commandReadFile = new FSGet(simpleQuery, utils)
-    val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
-    val expectedSchema = StructType(
-      List(
-        StructField("a", StringType),
-        StructField("b", StringType)
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testcsvmodel inferSchema=false""")
+      val commandReadFile = new FSGet(simpleQuery, utils)
+      val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
+      val expectedSchema = StructType(
+        List(
+          StructField("a", StringType),
+          StructField("b", StringType)
+        )
       )
-    )
 
-    assert(actual.columns.sameElements(expectedSchema.map(_.name)))
-    assert(actual.schema.equals(expectedSchema))
-    assert(actual.except(df).count() == 0)
+      assert(actual.columns.sameElements(expectedSchema.map(_.name)))
+      assert(actual.schema.equals(expectedSchema))
+      assert(actual.except(initialDf).count() == 0)
+    }
   }
 
-  test("Throw an error if no path specified") {
-    df.show()
-    val path = new File("src/test/resources/temp/read_test_file_parquet").getAbsolutePath
-    df.write.format("parquet").mode("overwrite").save(path)
-    val simpleQuery = SimpleQuery(""" format=parquet """)
-    val thrown = intercept[Exception] {
-      val commandReadFile = new FSGet(simpleQuery, utils)
-      execute(commandReadFile)
+  test("Read from not existing branch") {
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel branch=branch50 version=1""")
+      val thrown = intercept[Exception] {
+        val commandReadFile = new FSGet(simpleQuery, utils)
+        commandReadFile.transform(sparkSession.emptyDataFrame)
+      }
+      assert(thrown.getMessage.contains("Branch branch50, version 1 doesn't exists or doesn't contains data"))
     }
-    assert(thrown.getMessage.startsWith("No path specified"))
+  }
+
+  test("Read from not existing version") {
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    if (!new File(modelPath).exists()) {
+      log.error("Model testmodel doesn't exists")
+    } else {
+      val simpleQuery = SimpleQuery("""model=testModel branch=branch1 version=10""")
+      val thrown = intercept[Exception] {
+        val commandReadFile = new FSGet(simpleQuery, utils)
+        commandReadFile.transform(sparkSession.emptyDataFrame)
+      }
+      assert(thrown.getMessage.contains("Branch branch1, version 10 doesn't exists or doesn't contains data"))
+    }
   }
 }

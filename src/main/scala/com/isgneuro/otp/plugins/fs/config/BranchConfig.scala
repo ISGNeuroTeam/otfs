@@ -1,6 +1,5 @@
 package com.isgneuro.otp.plugins.fs.config
 
-import com.isgneuro.otp.plugins.fs.config.internals.AnyBranchConfig
 import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions, ConfigValue, ConfigValueFactory}
 
 import java.io.{File, FileOutputStream, PrintWriter}
@@ -9,7 +8,6 @@ import scala.collection.JavaConversions.{asJavaCollection, iterableAsScalaIterab
 import scala.collection.JavaConverters.iterableAsScalaIterableConverter
 
 class BranchConfig(modelPath: String, branch: String) extends FSConfig {
-  //val allowedProps: Array[String] = Array("parentBranch", "generatingVersion") ++ AnyBranchConfig.allowedProps
 
   val allowedStatuses: Array[String] = Array("init", "hasData")
 

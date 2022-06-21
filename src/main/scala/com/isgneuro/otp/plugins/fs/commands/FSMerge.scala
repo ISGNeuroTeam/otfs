@@ -3,14 +3,19 @@ package com.isgneuro.otp.plugins.fs.commands
 import com.isgneuro.otp.plugins.fs.config.BranchConfig
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
+import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 
+import java.io.File
+
 class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession {
 
   private val isInferSchema: String = getKeyword("inferSchema").getOrElse("true")
+
+  val format = ConfigFactory.parseFile(new File(modelPath + "/format.conf")).getString("format")
 
   private def createDfWriter: DataFrame => DataFrameWriter[Row] =
     df => df.write.format(format).mode(SaveMode.Append).option("header", "true")
