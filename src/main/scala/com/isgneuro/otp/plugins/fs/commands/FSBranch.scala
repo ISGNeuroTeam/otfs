@@ -14,6 +14,7 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
 
   override def transform(_df: DataFrame): DataFrame = {
     checkModelExisting
+    //Define new branch name, model and parent branch
     val branch = getKeyword("name") match {
       case Some(name) => name
       case None => sendError("branch name is not specified")
@@ -24,11 +25,13 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
       sendError("Branch " + branch + " is already exists")
     }
     val fromBranch = extractBranchName("from")
+    //Creating branch dir
     val branchPath = modelPath + "/" + branch
     val branchDir = new File(branchPath)
     val branchCreateSucc = branchDir.mkdirs()
     if (branchCreateSucc) {
       log.info("Directory for branch " + branch + " in model " +  model + " created.")
+      //Creating dir for version 1
       val version1Path = branchPath + "/1"
       val version1Dir = new File(version1Path)
       val version1CreateSucc = version1Dir.mkdirs()
@@ -36,6 +39,7 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
         log.info("Directory for version 1 in branch " + branch + " in model " +  model + " created.")
         val branchConfig = new BranchConfig(modelPath, branch)
         log.info("Config files for branch " + branch + " in model " +  model + " created.")
+        //Writing to config files
         branchConfig.createConfig("name", branch)
         log.debug("Writing name config")
         branchConfig.createConfig("parentbranch", fromBranch)

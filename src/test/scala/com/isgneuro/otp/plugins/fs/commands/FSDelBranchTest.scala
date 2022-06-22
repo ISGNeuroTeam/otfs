@@ -20,7 +20,7 @@ class FSDelBranchTest extends CommandTest{
       if (!branchDir.exists()) {
         log.error("Branch branch6 doesn't exists in model testmodel.")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel branch=branch1""")
+        val simpleQuery = SimpleQuery("""model=testModel branch=branch6""")
         val commandWriteFile = new FSDelBranch(simpleQuery, utils)
         val actual = execute(commandWriteFile)
         assert(!branchDir.exists())
