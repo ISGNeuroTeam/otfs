@@ -25,7 +25,7 @@ class FSDelBranchTest extends CommandTest{
         val actual = execute(commandWriteFile)
         assert(!branchDir.exists())
 
-        val branch2ChildsFile = new File(branchPath + "/childbranches.conf")
+        val branch2ChildsFile = new File(modelPath + "/branch2/childbranches.conf")
         assert(branch2ChildsFile.exists())
         val branch2ChildsConfig: Config = ConfigFactory.parseFile(branch2ChildsFile)
         assert(!branch2ChildsConfig.getStringList("childbranches").contains("branch6"))
