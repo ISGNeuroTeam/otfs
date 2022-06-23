@@ -12,6 +12,7 @@ import java.io.File
 class FSGetChildBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInformer(sq, utils) with OTLSparkSession{
 
   override def transform(_df: DataFrame): DataFrame = {
+    //Optional parameters extracting
     showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
     showCreationDate = getLogicParamValue("showcreationdate")
     showLastUpdateDate = getLogicParamValue("showlastupdatedate")
@@ -28,18 +29,24 @@ class FSGetChildBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureI
       sendError("Error: equal values in opposite parameters onlyWithChildBranches and onlyWithoutChildBranches. Define various values in these params or define only one param.")
     }
     showVersionsList = getLogicParamValue("showversionslist")
+    //Model dir defining
     checkModelExisting
+    //Branch defining
     val branch = extractBranchName("branch")
     val branchPath = modelPath + "/" + branch
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
         val config = new BranchConfig(modelPath, branch)
+        //All existing child branches for branch defining
         val allChildBranchNames = config.getChildBranches().getOrElse(Array[String]())
         val modelDirectory = new File(modelPath)
+        //Filter branches by conditions, defining in optional params
         val childBranchNames: Array[String] = getBranchNames(modelDirectory.listFiles.filter(f => f.isDirectory && allChildBranchNames.contains(f.getName)))
         log.debug("Defined branches: " + childBranchNames.mkString(",") + ".")
+        //Create base df without optional columns
         val childBranches = createBranchesDataframe(childBranchNames)
+        //Added optional columns to result def, if need
         completeBranchesDataframe(childBranches)
       } else {
         sendError("Error: path to branch \" + branch + \" isn't directory.")

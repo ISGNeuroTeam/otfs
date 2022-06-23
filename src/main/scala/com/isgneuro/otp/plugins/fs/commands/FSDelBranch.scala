@@ -93,6 +93,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
       val childsResult = for {cb <- childBranches} yield deleteChildBranch(cb)
       result ++= childsResult.flatMap(a => a.map(r => r))
     }
+    //Deleted branch, passed in parameter
     val brDirDeleted = deleteDirectory(brDirFile)
     if (brDirDeleted){
       log.debug("Structure of child branch " + branch + " deleted")
@@ -105,6 +106,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
     } else {
       "Deleting is failed"
     }
+    //Result forming
     result += BranchDelResult(branch, model, workMessage)
     log.debug("Added entry about " + branch + " to result.")
     result.toArray

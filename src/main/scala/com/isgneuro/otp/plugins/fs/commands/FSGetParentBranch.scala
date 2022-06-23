@@ -16,23 +16,28 @@ import java.nio.file.{Files, Paths}
 class FSGetParentBranch(sq: SimpleQuery, utils: PluginUtils) extends StructureInformer(sq, utils) with OTLSparkSession{
 
   override def transform(_df: DataFrame): DataFrame = {
+    //Optional parameters extracting
     showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
     showCreationDate = getLogicParamValue("showcreationdate")
     showLastUpdateDate = getLogicParamValue("showlastupdatedate")
     showLastVersionNum = getLogicParamValue("showlastversionnum")
     showVersionsList = getLogicParamValue("showversionslist")
+    //Model and branch defining
     checkModelExisting
     val branch = extractBranchName("branch")
     val branchPath = modelPath + "/" + branch
     val branchDirFile = new File(branchPath)
     if (branchDirFile.exists()) {
       if (branchDirFile.isDirectory) {
+        //Parent branch defining
         val config = new BranchConfig(modelPath, branch)
         val parentBranchName = config.getParentBranch().getOrElse("")
         val parentConfig = new BranchConfig(modelPath, parentBranchName)
+        //Result info df creating
         val parentBranch = Seq(Branch(parentBranchName, parentConfig.getParentBranch().getOrElse("")))
         import spark.implicits._
         var parentBranchDf = parentBranch.toDF()
+        //Added optional columns to result def, if need
         if (is(showVersionsList)) {
           val versionsListUdf = udf((name: String) => {parentConfig.getVersionsList().getOrElse(Array[String]()).mkString(",")})
           parentBranchDf = parentBranchDf.withColumn("versions", versionsListUdf(col("name")))
