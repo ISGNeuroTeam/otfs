@@ -8,10 +8,13 @@ import ot.dispatcher.sdk.test.CommandTest
 import java.io.File
 import scala.collection.JavaConverters.asJavaIterableConverter
 
-class FsInitTest extends CommandTest {
+class _1FSInitTest extends CommandTest {
   val dataset: String = ""
 
-  test("Test 0. Create new model with default files format") {
+  test("ATest 0. Create new model with default files format") {
+    val name = this.getClass.getName
+    val simpleName = this.getClass.getSimpleName
+    val cannonicalName = this.getClass.getCanonicalName
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {
@@ -86,7 +89,7 @@ class FsInitTest extends CommandTest {
     }
   }
 
-  test("Test 1. Create new model with user defined files format (csv)") {
+  test("ATest 1. Create new model with user defined files format (csv)") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {
@@ -159,7 +162,7 @@ class FsInitTest extends CommandTest {
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }
 
-  test("Test 2. Create new model with user defined files format (json)") {
+  test("ATest 2. Create new model with user defined files format (json)") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testjsonmodel" + "/").getAbsolutePath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {

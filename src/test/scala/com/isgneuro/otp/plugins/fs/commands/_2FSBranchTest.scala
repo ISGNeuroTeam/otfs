@@ -7,7 +7,7 @@ import ot.dispatcher.sdk.test.CommandTest
 import java.io.File
 import scala.collection.JavaConverters.asJavaIterableConverter
 
-class FSBranchTest extends CommandTest{
+class _2FSBranchTest extends CommandTest{
   val dataset: String = ""
 
   test("branch from main by default") {

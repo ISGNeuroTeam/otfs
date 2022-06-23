@@ -16,6 +16,7 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
   private val modelConfig = new ModelConfig(modelPath)
 
   override def transform(_df: DataFrame): DataFrame = {
+    //Defining model and branch
     checkModelExisting
     val branch = extractBranchName("branch")
     if (branch == "main") {
@@ -27,12 +28,15 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
       if (branchDirFile.isDirectory) {
         val delResults = new ArrayBuffer[BranchDelResult]
         log.info("Deleting work for branch " + branch + " started.")
+        //Child branches defining
         val branchConfig = new BranchConfig(modelPath, branch)
         val childBranches = branchConfig.getChildBranches.getOrElse(Array[String]())
+        // Child branches deleting
         if (childBranches.nonEmpty) {
           val childDelPreResults = for {
             br <- childBranches
           } yield deleteChildBranch(br)
+          //Child deleting results collecting
           val childDelResults = new ArrayBuffer[BranchDelResult]()
           for {r <- childDelPreResults} {
             childDelResults ++= r
@@ -41,16 +45,22 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
             sendError("Any child branches in branch " + branch + " not deleted")
           delResults ++= childDelResults
         }
+        //Parent branch of deleting branch defining
         val parentBranch = branchConfig.getParentBranch.getOrElse("")
         val parentBranchConfig = new BranchConfig(modelPath, parentBranch)
+        //Deleting branch directory defining
         val branchDirectory = new Directory(branchDirFile)
+        //Deleting of branch
         val branchDirDeleted = branchDirectory.deleteRecursively()
         if (branchDirDeleted) {
           log.debug("Structure of branch " + branch + " deleted")
+          //Deleting of entry about deleted branch from parent branch config
           val delBranchNameArray = Array(branch).toIterable.asJava
           parentBranchConfig.removeFromListConfig("childbranches", delBranchNameArray)
           log.debug("Entry about branch " + branch + " deleted from parent branch " + parentBranch + " config.")
+          //Deleting of entries about all deleted branches from model config
           modelConfig.removeFromListConfig("branches", delBranchNameArray)
+          //Result info table creating
           import spark.implicits._
           delResults += BranchDelResult(branch, model, "Deleting is successful")
           log.debug("Added entry about " + branch + " to result.")
@@ -68,10 +78,16 @@ class FSDelBranch(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils
     }
   }
 
+  /**
+   * Deleted child branch of any branch with all child branches on all levels
+   * @param branch branch name
+   * @return info results - all deleted branches
+   */
   private def deleteChildBranch(branch: String): Array[BranchDelResult] = {
     val result = new ArrayBuffer[BranchDelResult]
     val brDirFile = new File(modelPath + "/" + branch)
     val branchConfig = new BranchConfig(modelPath, branch)
+    //Child branches defining and delete childs for all of them recursively with results collecting
     val childBranches = branchConfig.getChildBranches.getOrElse(Array[String]())
     if (childBranches.nonEmpty) {
       val childsResult = for {cb <- childBranches} yield deleteChildBranch(cb)

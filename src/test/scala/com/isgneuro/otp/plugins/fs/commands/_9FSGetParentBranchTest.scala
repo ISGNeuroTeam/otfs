@@ -3,7 +3,7 @@ package com.isgneuro.otp.plugins.fs.commands
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
 
-class FSGetParentBranchTest extends CommandTest {
+class _9FSGetParentBranchTest extends CommandTest {
 
   val dataset: String = ""
 

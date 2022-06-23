@@ -8,9 +8,8 @@ import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
 
 import java.io.File
-import scala.collection.JavaConverters.asJavaIterableConverter
 
-class FSPutTest extends CommandTest {
+class _3FSPutTest extends CommandTest {
   Logger
     .getLogger("org")
     .setLevel(Level.ERROR)

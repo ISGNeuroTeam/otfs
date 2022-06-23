@@ -58,6 +58,7 @@ class FSBranch (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) 
         val modelConfig = new ModelConfig(modelPath)
         modelConfig.addToListConfig("branches", branchArray)
         log.info("Config files of model " + model + " added by information about new branch " + branch)
+        //result info table
         import spark.implicits._
         val resultSeq = Seq(BranchInitResult(branch, model, branchPath, "Initialization is successful"))
         resultSeq.toDF

@@ -3,7 +3,7 @@ package com.isgneuro.otp.plugins.fs.commands
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
 
-class FSDelModelTest extends CommandTest {
+class _7FSDelModelTest extends CommandTest {
   val dataset: String = ""
 
   test("Delete model") {

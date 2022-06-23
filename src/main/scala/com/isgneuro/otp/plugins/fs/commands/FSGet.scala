@@ -18,15 +18,19 @@ class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with
 
   override def transform(_df: DataFrame): DataFrame = {
     checkModelExisting
+    //Df reader creating
     val commonReader = spark.read
       .format(format)
       .option("header", "true")
     val dfReader = if (format == "csv") commonReader.option("inferSchema", isInferSchema) else commonReader
+    //Branch and version defining
     val branch = extractBranchName("branch")
     val branchConfig = new BranchConfig(modelPath, branch)
     val lastVersion = branchConfig.getLastVersion().getOrElse("1")
     val version = getKeyword("version").getOrElse(lastVersion)
+    //Data path defining
     val dataPath = modelPath + "/" + branch + "/" + version
+    //Data loading work
     try {
       val result = dfReader.load(dataPath)
       log.info("Data loaded from model " + model + ", branch " + branch + ", version " + version)

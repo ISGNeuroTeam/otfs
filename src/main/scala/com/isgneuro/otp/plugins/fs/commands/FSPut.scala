@@ -63,13 +63,16 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
   }
 
   override def transform(_df: DataFrame): DataFrame = {
+    //Df writer creating
     val dfw = (castNullColsToString _ andThen createDfWriter)(_df)
+    //Model and branch defining
     checkModelExisting
     branch = extractBranchName("branch")
     log.debug("Defined branch: " + branch)
     val branchConfig = new BranchConfig(modelPath, branch)
     val branchPath = "/" + branch
     log.debug("Defined branch path: " + branchPath)
+    //Version defining
     val lastVersion = branchConfig.getLastVersion().getOrElse("1")
     log.debug("Defined last version: " + lastVersion)
     val branchStatus = branchConfig.getStatus().getOrElse()
@@ -91,7 +94,9 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
           lastVersion
     }
     val versionPath = "/" + versionText
+    //Defining path for data saving
     val dataPath = modelPath + branchPath + versionPath
+    //Saving work
     partitionBy match {
       case Some(partitions) if isAllColsExists(partitions, _df) =>
         dfw.partitionBy(partitions: _*).save(dataPath)
@@ -102,6 +107,7 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
       case _ => dfw.save(dataPath)
     }
+    //Post saving config editing and logging
     log.info("Data saved in model " + model + ", branch " + branch + ", version " + versionText + ".")
     if (branchStatus == "init") {
       branchConfig.resetConfig("status", "hasData")
