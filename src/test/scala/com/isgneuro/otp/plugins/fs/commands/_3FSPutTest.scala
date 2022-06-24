@@ -338,9 +338,9 @@ class _3FSPutTest extends CommandTest {
       } else {
         val simpleQuery = SimpleQuery("""model=testmodel partitionBy=a,b""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
-        execute(commandWriteFile)
+        commandWriteFile.transform(jsonToDf(dataset3cols))
 
-        val expected = jsonToDf(dataset)
+        val expected = jsonToDf(dataset3cols)
         val actualDF = spark.read.format("parquet").load(branchPath + "/4").select("a", "b", "c").sort("a")
         assert(actualDF.rdd.getNumPartitions == 3)
         assert(actualDF.except(expected).count() == 0)
