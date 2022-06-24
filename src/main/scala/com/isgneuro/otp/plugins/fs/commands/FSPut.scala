@@ -77,21 +77,12 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     log.debug("Defined last version: " + lastVersion)
     val branchStatus = branchConfig.getStatus().getOrElse()
     log.debug("Defined branch status: " + branchStatus)
-    val isNewVersion = getKeyword("newversion").getOrElse(
-      branch match {
-        case "main" => if(branchStatus == "init") "false" else {"true"}
-        case _ => "false"
-      }
-    )
-    val versionText = isNewVersion match {
-      case "true" =>
-        if(createNewVersionPlace(lastVersion.toInt))
-          (lastVersion.toInt + 1).toString
-      case "false" =>
-        if (branch == "main" && branchStatus != "init")
-          sendError("Writing to main branch always in new version.")
-        else
-          lastVersion
+    val versionText = if (branchStatus == "init"){
+      lastVersion
+    } else if (createNewVersionPlace(lastVersion.toInt)) {
+      (lastVersion.toInt + 1).toString
+    } else {
+      sendError("Directory for new version not created.")
     }
     val versionPath = "/" + versionText
     //Defining path for data saving
@@ -113,13 +104,11 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
       branchConfig.resetConfig("status", "hasData")
       log.debug("Status changed from init to hasData in branch " + branch + ".")
     }
-    if (isNewVersion == "true") {
-      val newVersion = (lastVersion.toInt + 1).toString
-      branchConfig.resetConfig("lastversion", newVersion)
-      log.debug("Last version changed from " + lastVersion + " to " + versionText + " in branch " + branch + ".")
-      branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
-      log.debug("Version " + versionText + " added to versions list of branch " + branch + ".")
-    }
+    val newVersion = (lastVersion.toInt + 1).toString
+    branchConfig.resetConfig("lastversion", newVersion)
+    log.debug("Last version changed from " + lastVersion + " to " + versionText + " in branch " + branch + ".")
+    branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
+    log.debug("Version " + versionText + " added to versions list of branch " + branch + ".")
     _df
   }
 }

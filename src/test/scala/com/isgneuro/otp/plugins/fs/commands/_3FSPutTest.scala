@@ -105,7 +105,7 @@ class _3FSPutTest extends CommandTest {
     }
   }
 
-  test("Write to main newVersion=true"){
+  ignore("Write to main newVersion=true"){
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
@@ -136,7 +136,7 @@ class _3FSPutTest extends CommandTest {
     }
   }
 
-  test("Write to main newVersion=false"){
+  ignore("Write to main newVersion=false"){
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
@@ -190,7 +190,7 @@ class _3FSPutTest extends CommandTest {
     }
   }
 
-  test("Write to some branch newVersion=false") {
+  test("Write to some branch (other, init)") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
@@ -199,7 +199,7 @@ class _3FSPutTest extends CommandTest {
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testmodel branch=branch2 newversion=false""")
+        val simpleQuery = SimpleQuery("""model=testmodel branch=branch2""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         execute(commandWriteFile)
 
@@ -225,7 +225,7 @@ class _3FSPutTest extends CommandTest {
     }
   }
 
-  test("Write to some branch newVersion=true") {
+  test("Write to some branch (other, continue)") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
@@ -234,7 +234,7 @@ class _3FSPutTest extends CommandTest {
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testmodel branch=branch2 newversion=true""")
+        val simpleQuery = SimpleQuery("""model=testmodel branch=branch2""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         commandWriteFile.transform(jsonToDf(appended))
 
@@ -348,7 +348,7 @@ class _3FSPutTest extends CommandTest {
     }
   }
 
-  test("Write with different modes") { // TODO Make one test per mode
+  ignore("Write with different modes") { // TODO Make one test per mode
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
@@ -398,7 +398,7 @@ class _3FSPutTest extends CommandTest {
   }
 
   test("Write to unknown branch") {
-    val simpleQuery = SimpleQuery("""model=testmodel branch=superbranch format=parquet""")
+    val simpleQuery = SimpleQuery("""model=testmodel branch=superbranch""")
     val thrown = intercept[Exception] {
       val commandWriteFile = new FSPut(simpleQuery, utils)
       execute(commandWriteFile)

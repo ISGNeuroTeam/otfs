@@ -12,7 +12,7 @@ class FSGetBranches(sq: SimpleQuery, utils: PluginUtils) extends StructureInform
 
   override def transform(_df: DataFrame): DataFrame = {
     //Optional parameters extracting
-    showDataExistsInfo = getLogicParamValue("showdataexistsinfo")
+    showDataExistsInfo = getLogicParamValue("showdataexistsinfo")//Added optional columns to result def, if need//Added optional columns to result def, if need
     showCreationDate = getLogicParamValue("showcreationdate")
     showLastUpdateDate = getLogicParamValue("showlastupdatedate")
     showLastVersionNum = getLogicParamValue("showlastversionnum")
