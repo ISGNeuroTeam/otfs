@@ -315,12 +315,12 @@ class _3FSPutTest extends CommandTest {
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel partitionBy=a""")
+        val simpleQuery = SimpleQuery("""model=testmodel partitionBy=a""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         execute(commandWriteFile)
 
         val expected = jsonToDf(dataset)
-        val actualDF = spark.read.format("parquet").load(branchPath + "/4").select("a", "b").sort("a")
+        val actualDF = spark.read.format("parquet").load(branchPath + "/3").select("a", "b").sort("a")
         assert(actualDF.rdd.getNumPartitions == 2)
         assert(actualDF.except(expected).count() == 0)
       }
@@ -336,12 +336,12 @@ class _3FSPutTest extends CommandTest {
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel partitionBy=a,b""")
+        val simpleQuery = SimpleQuery("""model=testmodel partitionBy=a,b""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         execute(commandWriteFile)
 
         val expected = jsonToDf(dataset)
-        val actualDF = spark.read.format("parquet").load(branchPath + "/5").select("a", "b", "c").sort("a")
+        val actualDF = spark.read.format("parquet").load(branchPath + "/4").select("a", "b", "c").sort("a")
         assert(actualDF.rdd.getNumPartitions == 3)
         assert(actualDF.except(expected).count() == 0)
       }
@@ -388,7 +388,7 @@ class _3FSPutTest extends CommandTest {
 
         val simpleQuery = SimpleQuery("""model=testmodel branch=branch4""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
-        val _ = commandWriteFile.transform(df)
+        execute(commandWriteFile)
 
         val actualReaded = spark.read.format("parquet").load(branchPath + "/1")
         assert(actualReaded.columns.sameElements(Array("a", "b", "c")))

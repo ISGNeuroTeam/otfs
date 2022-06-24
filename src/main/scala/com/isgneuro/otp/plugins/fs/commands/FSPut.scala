@@ -26,7 +26,8 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   private var branch: String = "main"
 
-  val format = ConfigFactory.parseFile(new File(modelPath + "/format.conf")).getString("format")
+  private val parsedFormatConfig = ConfigFactory.parseFile(new File(modelPath + "/format.conf"))
+  val format = parsedFormatConfig.getString("format")
 
   private def castNullColsToString(df: DataFrame): DataFrame = {
     val schema = df.schema
@@ -103,12 +104,13 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
     if (branchStatus == "init") {
       branchConfig.resetConfig("status", "hasData")
       log.debug("Status changed from init to hasData in branch " + branch + ".")
+    } else {
+      val newVersion = (lastVersion.toInt + 1).toString
+      branchConfig.resetConfig("lastversion", newVersion)
+      log.debug("Last version changed from " + lastVersion + " to " + versionText + " in branch " + branch + ".")
+      branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
+      log.debug("Version " + versionText + " added to versions list of branch " + branch + ".")
     }
-    val newVersion = (lastVersion.toInt + 1).toString
-    branchConfig.resetConfig("lastversion", newVersion)
-    log.debug("Last version changed from " + lastVersion + " to " + versionText + " in branch " + branch + ".")
-    branchConfig.addToListConfig("versions", Array(newVersion).toIterable.asJava)
-    log.debug("Version " + versionText + " added to versions list of branch " + branch + ".")
     _df
   }
 }

@@ -1,13 +1,14 @@
 package com.isgneuro.otp.plugins.fs.config
 
+import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions, ConfigValue, ConfigValueFactory}
 
 import scala.collection.JavaConversions.{asJavaCollection, iterableAsScalaIterable}
-import java.io.{File, FileOutputStream, PrintWriter}
+import java.io.{File, FileOutputStream, FileWriter, PrintWriter}
 import java.util
 
 class ModelConfig(modelPath: String) extends FSConfig {
-  val allowedProps: Array[String] = Array("modelname", "pathbranch_")
 
   def createConfig(name: String, value: String) = {
     createConfigExec(name, ConfigValueFactory.fromAnyRef(value))
@@ -20,6 +21,9 @@ class ModelConfig(modelPath: String) extends FSConfig {
   private def createConfigExec(name: String, configValue: ConfigValue) = {
     val file = new File(modelPath + "/" + name + ".conf")
     val content = ConfigFactory.empty.withValue(name, configValue)
+    /*val jwriter = new JsonWriter(new FileWriter(file, true))
+    val jsonObject = new JsonObject
+    jsonObject.add(name, )*/
     val writer = new PrintWriter(new FileOutputStream(file, true))
     writer.write(content.root().render(ConfigRenderOptions.concise()))
     writer.write("\r\n")

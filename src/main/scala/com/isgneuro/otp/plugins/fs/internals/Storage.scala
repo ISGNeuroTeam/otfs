@@ -18,7 +18,7 @@ class Storage(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, uti
   }
   val fs: String = pluginConfig.getString("storage.fs")
   val basePath: String = pluginConfig.getString("storage.path")
-  val absolutePath: String = fs + new File(basePath,path).getAbsolutePath
+  val absolutePath: String = fs + new File(basePath,model).getAbsolutePath
   log.info(s"Absolute path: $absolutePath.")
 
   val requiredKeywords: Set[String] = Set("model")
