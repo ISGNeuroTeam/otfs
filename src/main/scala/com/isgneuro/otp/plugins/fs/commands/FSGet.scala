@@ -1,20 +1,24 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
 import com.typesafe.config.ConfigFactory
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.types.NullType
+import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
 import ot.dispatcher.sdk.PluginUtils
 import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
+import scala.collection.JavaConverters.asJavaIterableConverter
 
-class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession {
+class FSGet(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) with OTLSparkSession{
+
+  private val modelConfig = new ModelConfig(modelPath)
+  val format = modelConfig.getFormat.getOrElse("parquet")
 
   private val isInferSchema: String = getKeyword("inferSchema").getOrElse("true")
-
-  val format = ConfigFactory.parseFile(new File(modelPath + "/format.conf")).getString("format")
 
   override def transform(_df: DataFrame): DataFrame = {
     checkModelExisting

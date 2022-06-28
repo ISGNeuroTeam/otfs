@@ -90,4 +90,15 @@ class ModelConfig(modelPath: String) extends FSConfig {
     }
   }
 
+  def getFormat(): Option[String] = {
+    val configFile = new File(modelPath + "/format.conf")
+    val config: Config = ConfigFactory.parseFile(configFile)
+    try {
+      val result = config.getString("format")
+      Some(result)
+    } catch {
+      case e: Exception => None
+    }
+  }
+
 }

@@ -34,9 +34,9 @@ class _5FSMergeTest extends CommandTest{
       val outBranchPath = modelPath + "/branch1"
       val inBranchPath = modelPath + "/branch2"
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
-        log.error("As minimum one of branches in model testmodel doesn't exists")
+        log.error("As   minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel outbranch=branch1 inbranch=branch2""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=branch1 inbranch=branch2""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
         execute(commandWriteFile)
 
@@ -58,7 +58,7 @@ class _5FSMergeTest extends CommandTest{
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
         log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel outbranch=main inbranch=branch2 outbranchversion=2""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=main inbranch=branch2 outbranchversion=2""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
         execute(commandWriteFile)
 
@@ -80,7 +80,7 @@ class _5FSMergeTest extends CommandTest{
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
         log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel outbranch=branch1 inbranch=branch2 inbranchversion=1""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=branch1 inbranch=branch2 inbranchversion=1""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
         execute(commandWriteFile)
 

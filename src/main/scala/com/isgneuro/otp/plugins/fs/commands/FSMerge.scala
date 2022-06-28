@@ -1,6 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.isgneuro.otp.spark.OTLSparkSession
 import com.typesafe.config.ConfigFactory
@@ -15,7 +15,8 @@ class FSMerge(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
 
   private val isInferSchema: String = getKeyword("inferSchema").getOrElse("true")
 
-  val format = ConfigFactory.parseFile(new File(modelPath + "/format.conf")).getString("format")
+  private val modelConfig = new ModelConfig(modelPath)
+  val format = modelConfig.getFormat.getOrElse("parquet")
 
   private def createDfWriter: DataFrame => DataFrameWriter[Row] =
     df => df.write.format(format).mode(SaveMode.Append).option("header", "true")

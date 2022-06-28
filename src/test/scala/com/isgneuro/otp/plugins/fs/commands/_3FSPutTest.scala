@@ -388,7 +388,7 @@ class _3FSPutTest extends CommandTest {
 
         val simpleQuery = SimpleQuery("""model=testmodel branch=branch4""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
-        execute(commandWriteFile)
+        commandWriteFile.transform(df)
 
         val actualReaded = spark.read.format("parquet").load(branchPath + "/1")
         assert(actualReaded.columns.sameElements(Array("a", "b", "c")))

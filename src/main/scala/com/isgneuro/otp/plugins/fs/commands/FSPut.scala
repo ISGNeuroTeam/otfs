@@ -1,6 +1,6 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.isgneuro.otp.plugins.fs.config.BranchConfig
+import com.isgneuro.otp.plugins.fs.config.{BranchConfig, ModelConfig}
 import com.isgneuro.otp.plugins.fs.internals.Storage
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.{DataFrame, DataFrameWriter, Row, SaveMode}
@@ -26,8 +26,8 @@ class FSPut(sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) {
 
   private var branch: String = "main"
 
-  private val parsedFormatConfig = ConfigFactory.parseFile(new File(modelPath + "/format.conf"))
-  val format = parsedFormatConfig.getString("format")
+  private val modelConfig = new ModelConfig(modelPath)
+  val format = modelConfig.getFormat.getOrElse("parquet")
 
   private def castNullColsToString(df: DataFrame): DataFrame = {
     val schema = df.schema

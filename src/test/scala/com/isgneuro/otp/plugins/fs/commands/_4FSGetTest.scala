@@ -44,7 +44,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel""")
+      val simpleQuery = SimpleQuery("""model=testmodel""")
       val commandReadFile = new FSGet(simpleQuery, utils)
       val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
       val expectedCols = Array("a", "b")
@@ -59,7 +59,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel branch=branch2""")
+      val simpleQuery = SimpleQuery("""model=testmodel branch=branch2""")
       val commandReadFile = new FSGet(simpleQuery, utils)
       val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
       assert(actual.except(jsonToDf(appended)).count() == 0)
@@ -71,7 +71,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel version=1""")
+      val simpleQuery = SimpleQuery("""model=testmodel version=1""")
       val commandReadFile = new FSGet(simpleQuery, utils)
       val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
       assert(actual.except(initialDf).count() == 0)
@@ -83,7 +83,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel branch=branch2 version=1""")
+      val simpleQuery = SimpleQuery("""model=testmodel branch=branch2 version=1""")
       val commandReadFile = new FSGet(simpleQuery, utils)
       val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
       assert(actual.except(initialDf).count() == 0)
@@ -93,7 +93,7 @@ class _4FSGetTest extends CommandTest {
   test("Infer schema if 'csv' format specified ") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
-      log.error("Model testmodel doesn't exists")
+      log.error("Model testcsvmodel doesn't exists")
     } else {
       val simpleQuery = SimpleQuery("""model=testcsvmodel inferSchema=true""")
       val commandReadFile = new FSGet(simpleQuery, utils)
@@ -114,7 +114,7 @@ class _4FSGetTest extends CommandTest {
   test("Do not infer schema if 'csv' format specified and inferSchema=false") {
     val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
     if (!new File(modelPath).exists()) {
-      log.error("Model testmodel doesn't exists")
+      log.error("Model testcsvmodel doesn't exists")
     } else {
       val simpleQuery = SimpleQuery("""model=testcsvmodel inferSchema=false""")
       val commandReadFile = new FSGet(simpleQuery, utils)
@@ -137,7 +137,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel branch=branch50 version=1""")
+      val simpleQuery = SimpleQuery("""model=testmodel branch=branch50 version=1""")
       val thrown = intercept[Exception] {
         val commandReadFile = new FSGet(simpleQuery, utils)
         commandReadFile.transform(sparkSession.emptyDataFrame)
@@ -151,7 +151,7 @@ class _4FSGetTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val simpleQuery = SimpleQuery("""model=testModel branch=branch1 version=10""")
+      val simpleQuery = SimpleQuery("""model=testmodel branch=branch1 version=10""")
       val thrown = intercept[Exception] {
         val commandReadFile = new FSGet(simpleQuery, utils)
         commandReadFile.transform(sparkSession.emptyDataFrame)
