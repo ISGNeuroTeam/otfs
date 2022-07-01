@@ -30,5 +30,5 @@ _Обязательные параметры_:
 #### Примеры запросов
 
 ```
-| fsput model=somemodel branch=anybranch newversion=true format=parquet mode=overwrite
+| fsput model=somemodel branch=anybranch
 ```

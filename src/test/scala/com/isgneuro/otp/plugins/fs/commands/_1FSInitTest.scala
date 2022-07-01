@@ -80,7 +80,7 @@ class _1FSInitTest extends CommandTest {
       assert(modelBranchesConfig.getStringList("branches").contains("main"))
       val expected =
         """[
-          |{"name":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel","workMessage":"Initialization is successful"}
+          |{"name":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel","format":"parquet","workMessage":"Initialization is successful"}
           |]""".stripMargin
       assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
     }
@@ -154,7 +154,7 @@ class _1FSInitTest extends CommandTest {
     val modelBranchesConfig: Config = ConfigFactory.parseFile(modelBranchesFile)
     assert(modelBranchesConfig.getStringList("branches").contains("main"))
     val expected = """[
-                     |{"name":"testcsvmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testcsvmodel","workMessage":"Initialization is successful"}
+                     |{"name":"testcsvmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testcsvmodel","format":"csv","workMessage":"Initialization is successful"}
                      |]""".stripMargin
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }
@@ -227,7 +227,7 @@ class _1FSInitTest extends CommandTest {
     val modelBranchesConfig: Config = ConfigFactory.parseFile(modelBranchesFile)
     assert(modelBranchesConfig.getStringList("branches").contains("main"))
     val expected = """[
-                     |{"name":"testjsonmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testjsonmodel","workMessage":"Initialization is successful"}
+                     |{"name":"testjsonmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testjsonmodel","format":"json","workMessage":"Initialization is successful"}
                      |]""".stripMargin
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }

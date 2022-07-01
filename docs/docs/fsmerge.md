@@ -30,5 +30,5 @@ _Обязательные параметры_:
 #### Примеры запросов
 
 ```
-| fsmerge model=somemodel outbranch=branch1 inbranch=branch2 outbranchversion=1 inbranchversion=1 format=parquet
+| fsmerge model=somemodel outbranch=branch1 inbranch=branch2 outbranchversion=1 inbranchversion=1
 ```

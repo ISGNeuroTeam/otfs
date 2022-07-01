@@ -62,7 +62,7 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
           log.debug("Writing versions config")
           //result info table
           import spark.implicits._
-          val resultSeq = Seq(InitResult(model, modelPath, "Initialization is successful"))
+          val resultSeq = Seq(InitResult(model, modelPath, format, "Initialization is successful"))
           resultSeq.toDF
         } else {
           sendError("Dir for version 1 not created")
@@ -76,4 +76,4 @@ class FSInit (sq: SimpleQuery, utils: PluginUtils) extends Storage(sq, utils) wi
   }
 }
 
-case class InitResult(name: String, path: String, workMessage: String)
+case class InitResult(name: String, path: String, format: String, workMessage: String)

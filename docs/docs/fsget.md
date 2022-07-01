@@ -24,5 +24,5 @@ _Обязательные параметры_:
 #### Примеры запросов
 
 ```
-| fsget model=somemodel branch=anybranch version=1 format=csv
+| fsget model=somemodel branch=anybranch version=1
 ```
