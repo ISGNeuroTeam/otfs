@@ -17,7 +17,7 @@ class _1FSInitTest extends CommandTest {
     if (modelDir.exists()) {
       assert(modelDir.exists())
       assert(modelDir.isDirectory)
-      log.info("Model testmodel is already exists")
+      log.info("Model testmodel1 is already exists")
     } else {
       val simpleQuery = SimpleQuery("model=testmodel")
       val initCommand = new FSInit(simpleQuery, utils)
@@ -80,7 +80,7 @@ class _1FSInitTest extends CommandTest {
       assert(modelBranchesConfig.getStringList("branches").contains("main"))
       val expected =
         """[
-          |{"name":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel","format":"parquet","workMessage":"Initialization is successful"}
+          |{"name":"testmodel1","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel1","format":"parquet","workMessage":"Initialization is successful"}
           |]""".stripMargin
       assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
     }
