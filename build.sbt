@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
 
 Test / parallelExecution := false
 
-Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.aFSInitTest") )
+/*Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.aFSInitTest") )
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSBranchTest") )
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSPutTest") )
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSGetTest") )
@@ -43,7 +43,7 @@ Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSGetBranchesTest") )
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSGetParentBranchTest") )
 Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.FSGetChildBranchesTest") )
-Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.RepartitionTest") )
+Test / testOptions += Tests.Setup( loader => loader.loadClass("com.isgneuro.otp.plugins.fs.commands.RepartitionTest") )*/
 
 publishTo := Some(
   "Sonatype Nexus Repository Manager" at sys.env.getOrElse("NEXUS_OTP_URL_HTTPS", "")
