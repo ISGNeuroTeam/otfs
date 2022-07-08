@@ -8,7 +8,7 @@ import ot.dispatcher.sdk.test.CommandTest
 import java.io.File
 import scala.collection.JavaConverters.asJavaIterableConverter
 
-class _1FSInitTest extends CommandTest {
+class FSInitTest extends CommandTest {
   val dataset: String = ""
 
   test("Test 0. Create new model with default files format") {

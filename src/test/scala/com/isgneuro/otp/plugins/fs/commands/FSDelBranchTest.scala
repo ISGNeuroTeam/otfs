@@ -6,7 +6,7 @@ import ot.dispatcher.sdk.test.CommandTest
 
 import java.io.File
 
-class _6FSDelBranchTest extends CommandTest{
+class FSDelBranchTest extends CommandTest{
   val dataset: String = ""
 
   test("Delete branch") {

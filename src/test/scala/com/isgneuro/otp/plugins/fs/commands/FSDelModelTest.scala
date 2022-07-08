@@ -5,7 +5,7 @@ import ot.dispatcher.sdk.test.CommandTest
 
 import java.io.File
 
-class _7FSDelModelTest extends CommandTest {
+class FSDelModelTest extends CommandTest {
   val dataset: String = ""
 
   test("Delete model") {

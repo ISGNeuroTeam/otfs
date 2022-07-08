@@ -9,7 +9,7 @@ import ot.dispatcher.sdk.test.CommandTest
 
 import java.io.File
 
-class _3FSPutTest extends CommandTest {
+class FSPutTest extends CommandTest {
   Logger
     .getLogger("org")
     .setLevel(Level.ERROR)

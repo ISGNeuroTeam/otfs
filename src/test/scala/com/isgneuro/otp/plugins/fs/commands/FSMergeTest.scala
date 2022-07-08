@@ -6,7 +6,7 @@ import ot.dispatcher.sdk.test.CommandTest
 
 import java.io.File
 
-class _5FSMergeTest extends CommandTest{
+class FSMergeTest extends CommandTest{
   override val dataset: String = """[
                                    |{"a":"1","b":"2"},
                                    |{"a":"10","b":"20"}

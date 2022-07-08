@@ -8,7 +8,7 @@ import ot.dispatcher.sdk.core.SimpleQuery
 
 import java.io.File
 
-class _4FSGetTest extends CommandTest {
+class FSGetTest extends CommandTest {
   Logger
     .getLogger("org")
     .setLevel(Level.ERROR)
