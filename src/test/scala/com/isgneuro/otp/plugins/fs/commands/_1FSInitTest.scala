@@ -1,4 +1,4 @@
-package com.isgneuro.otp.plugins.fs.commands
+/*package com.isgneuro.otp.plugins.fs.commands
 
 import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.spark.sql.SparkSession
@@ -231,4 +231,4 @@ class _1FSInitTest extends CommandTest {
                      |]""".stripMargin
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }
-}
+}*/

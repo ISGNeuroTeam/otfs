@@ -1,4 +1,4 @@
-package com.isgneuro.otp.plugins.fs.commands
+/*package com.isgneuro.otp.plugins.fs.commands
 
 import com.typesafe.config.{Config, ConfigFactory}
 import ot.dispatcher.sdk.core.SimpleQuery
@@ -89,4 +89,4 @@ class _6FSDelBranchTest extends CommandTest{
       }
     }
   }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.isgneuro.otp.plugins.fs.commands
+/*package com.isgneuro.otp.plugins.fs.commands
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
@@ -159,4 +159,4 @@ class _4FSGetTest extends CommandTest {
       assert(thrown.getMessage.contains("Branch branch1, version 10 doesn't exists or doesn't contains data"))
     }
   }
-}
+}*/

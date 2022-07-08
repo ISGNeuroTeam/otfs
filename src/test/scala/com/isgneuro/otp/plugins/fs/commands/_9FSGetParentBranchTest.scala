@@ -1,4 +1,4 @@
-package com.isgneuro.otp.plugins.fs.commands
+/*package com.isgneuro.otp.plugins.fs.commands
 
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
@@ -25,4 +25,4 @@ class _9FSGetParentBranchTest extends CommandTest {
     val commandWriteFile = new FSGetParentBranch(simpleQuery, utils)
     execute(commandWriteFile)
   }
-}
+}*/

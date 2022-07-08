@@ -1,4 +1,4 @@
-package com.isgneuro.otp.plugins.fs.commands
+/*package com.isgneuro.otp.plugins.fs.commands
 
 import org.apache.spark.sql.SparkSession
 import ot.dispatcher.sdk.core.SimpleQuery
@@ -133,4 +133,4 @@ class _5FSMergeTest extends CommandTest{
       }
     }
   }
-}
+}*/
