@@ -1,4 +1,4 @@
-/*package com.isgneuro.otp.plugins.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.{DataFrame, SparkSession}
@@ -55,4 +55,4 @@ class RepartitionTest extends CommandTest {
     }
     assert(thrown.getMessage.contains("You should specify the 'num' parameter as positive integer"))
   }
-}*/
+}

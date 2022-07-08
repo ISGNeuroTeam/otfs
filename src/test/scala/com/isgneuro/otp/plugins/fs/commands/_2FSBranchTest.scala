@@ -1,4 +1,4 @@
-/*package com.isgneuro.otp.plugins.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
 import com.typesafe.config.{Config, ConfigFactory}
 import ot.dispatcher.sdk.core.SimpleQuery
@@ -436,4 +436,4 @@ class _2FSBranchTest extends CommandTest{
       assert(thrown.getMessage.contains("Branch superbranch doesn't exists in model testmodel. Use command fsbranch for new branch creation"))
     }
   }
-}*/
+}

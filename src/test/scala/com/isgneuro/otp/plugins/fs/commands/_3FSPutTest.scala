@@ -1,4 +1,4 @@
-/*package com.isgneuro.otp.plugins.fs.commands
+package com.isgneuro.otp.plugins.fs.commands
 
 import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.log4j.{Level, Logger}
@@ -406,4 +406,4 @@ class _3FSPutTest extends CommandTest {
     assert(thrown.getMessage.contains("Branch superbranch doesn't exists in model testmodel. Use command fsbranch for new branch creation"))
   }
 
-}*/
+}
