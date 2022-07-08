@@ -1,6 +1,5 @@
 package com.isgneuro.otp.plugins.fs.commands
 
-import com.typesafe.config.{Config, ConfigFactory}
 import ot.dispatcher.sdk.core.SimpleQuery
 import ot.dispatcher.sdk.test.CommandTest
 

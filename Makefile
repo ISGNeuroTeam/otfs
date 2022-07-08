@@ -2,7 +2,6 @@ define ANNOUNCE_BODY
 Required section:
  build - build project into build directory, with configuration file and environment
  clean - clean all addition file, build directory and output archive file
- test - run all tests
  pack - make output archive
 Addition section:
  package - sbt assembly
@@ -70,8 +69,3 @@ clean:
 	$(SET_SCALA_VERSION)
 	$(SET_PROJECT_NAME_LOW_CASE)
 	rm -rf $(PROJECT_NAME_LOW_CASE)-*.tar.gz build publish target
-
-test:
-	# required section
-	echo "Testing..."
-	sbt test
