@@ -10,7 +10,7 @@ class FSDelBranchTest extends CommandTest{
   val dataset: String = ""
 
   test("Delete branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (!modelDir.exists()) {
       log.error("Model testmodel doesn't exists.")
@@ -44,16 +44,16 @@ class FSDelBranchTest extends CommandTest{
   }
 
   test("Delete branch with many childs and deeping of childs") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (!modelDir.exists()) {
       log.error("Model testmodel doesn't exists.")
     } else {
-      val branchPath = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch1"
+      val branchPath = modelPath + "/branch1"
       val branchDir = new File(branchPath)
-      val branchc1Path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch3"
+      val branchc1Path = modelPath + "/branch3"
       val branchc1Dir = new File(branchc1Path)
-      val branchc2Path = "file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch4"
+      val branchc2Path = modelPath + "/branch4"
       val branchc2Dir = new File(branchc2Path)
       if (!branchDir.exists()) {
         log.error("Branch branch1 doesn't exists in model testmodel.")

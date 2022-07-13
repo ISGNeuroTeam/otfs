@@ -10,7 +10,7 @@ class FSBranchTest extends CommandTest{
   val dataset: String = ""
 
   test("branch from main by default") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -67,8 +67,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("main"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch1"))
         val expected =
-          """[
-            |{"name":"branch1","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch1","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch1","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -76,7 +76,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from main") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -135,8 +135,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("branch1"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch2"))
         val expected =
-          """[
-            |{"name":"branch2","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch2","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch2","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -144,7 +144,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from some branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -203,8 +203,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("branch2"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch3"))
         val expected =
-          """[
-            |{"name":"branch3","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch3","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch3","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -212,7 +212,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("additional branch from some branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -273,8 +273,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("branch3"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch4"))
         val expected =
-          """[
-            |{"name":"branch4","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch4","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch4","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -282,7 +282,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from another branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -343,8 +343,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("branch4"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch5"))
         val expected =
-          """[
-            |{"name":"branch5","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch5","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch5","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -352,7 +352,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("additional branch from another branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -415,8 +415,8 @@ class FSBranchTest extends CommandTest{
         assert(modelBranchesConfig.getStringList("branches").contains("branch5"))
         assert(modelBranchesConfig.getStringList("branches").contains("branch6"))
         val expected =
-          """[
-            |{"name":"branch6","model":"testmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel/branch6","workMessage":"Initialization is successful"}
+          s"""[
+            |{"name":"branch6","model":"testmodel","path":"$branchPath","workMessage":"Initialization is successful"}
             |]""".stripMargin
         assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
       }
@@ -424,7 +424,7 @@ class FSBranchTest extends CommandTest{
   }
 
   test("branch from unknown branch") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {

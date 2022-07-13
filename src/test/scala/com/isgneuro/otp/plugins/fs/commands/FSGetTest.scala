@@ -20,6 +20,12 @@ class FSGetTest extends CommandTest {
 
   val initialDf: DataFrame = jsonToDf(dataset)
 
+  val dataset3cols: String = """[
+                               |{"c":"300","a":"10","b":"20"},
+                               |{"c":"30","a":"10","b":"2"},
+                               |{"c":"3","a":"1","b":"2"}
+                               |]""".stripMargin
+
   val appended: String = """[
                            | {"a":"1","b":"2"},
                            |{"a":"10","b":"20"},
@@ -49,7 +55,6 @@ class FSGetTest extends CommandTest {
       val actual = commandReadFile.transform(sparkSession.emptyDataFrame)
       val expectedCols = Array("a", "b")
       assert(actual.columns.sameElements(expectedCols))
-      assert(actual.rdd.getNumPartitions == 3)
       assert(actual.except(initialDf).count() == 0)
     }
   }
@@ -101,7 +106,7 @@ class FSGetTest extends CommandTest {
       val expectedSchema = StructType(
         List(
           StructField("a", IntegerType),
-          StructField("b", StringType)
+          StructField("b", IntegerType)
         )
       )
 
@@ -142,7 +147,7 @@ class FSGetTest extends CommandTest {
         val commandReadFile = new FSGet(simpleQuery, utils)
         commandReadFile.transform(sparkSession.emptyDataFrame)
       }
-      assert(thrown.getMessage.contains("Branch branch50, version 1 doesn't exists or doesn't contains data"))
+      assert(thrown.getMessage.contains("Branch branch50 doesn't exists in model testmodel. Use command fsbranch for new branch creation"))
     }
   }
 

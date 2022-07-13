@@ -12,12 +12,14 @@ class FSInitTest extends CommandTest {
   val dataset: String = ""
 
   test("Test 0. Create new model with default files format") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val fs = utils.pluginConfig.getString("storage.fs")
+    val path = utils.pluginConfig.getString("storage.path")
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {
       assert(modelDir.exists())
       assert(modelDir.isDirectory)
-      log.info("Model testmodel1 is already exists")
+      log.info("Model testmodel is already exists")
     } else {
       val simpleQuery = SimpleQuery("model=testmodel")
       val initCommand = new FSInit(simpleQuery, utils)
@@ -79,15 +81,15 @@ class FSInitTest extends CommandTest {
       val modelBranchesConfig: Config = ConfigFactory.parseFile(modelBranchesFile)
       assert(modelBranchesConfig.getStringList("branches").contains("main"))
       val expected =
-        """[
-          |{"name":"testmodel1","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testmodel1","format":"parquet","workMessage":"Initialization is successful"}
+        s"""[
+          |{"name":"testmodel","path":"$modelPath","format":"parquet","workMessage":"Initialization is successful"}
           |]""".stripMargin
       assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
     }
   }
 
   test("Test 1. Create new model with user defined files format (csv)") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {
       assert(modelDir.exists())
@@ -153,14 +155,14 @@ class FSInitTest extends CommandTest {
     assert(modelBranchesFile.exists())
     val modelBranchesConfig: Config = ConfigFactory.parseFile(modelBranchesFile)
     assert(modelBranchesConfig.getStringList("branches").contains("main"))
-    val expected = """[
-                     |{"name":"testcsvmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testcsvmodel","format":"csv","workMessage":"Initialization is successful"}
+    val expected = s"""[
+                     |{"name":"testcsvmodel","path":"$modelPath","format":"csv","workMessage":"Initialization is successful"}
                      |]""".stripMargin
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }
 
   test("Test 2. Create new model with user defined files format (json)") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testjsonmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testjsonmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (modelDir.exists()) {
       assert(modelDir.exists())
@@ -226,8 +228,8 @@ class FSInitTest extends CommandTest {
     assert(modelBranchesFile.exists())
     val modelBranchesConfig: Config = ConfigFactory.parseFile(modelBranchesFile)
     assert(modelBranchesConfig.getStringList("branches").contains("main"))
-    val expected = """[
-                     |{"name":"testjsonmodel","path":"file:///home/rkpvteh/src/otfs/src/test/resources/temp/testjsonmodel","format":"json","workMessage":"Initialization is successful"}
+    val expected = s"""[
+                     |{"name":"testjsonmodel","path":"$modelPath","format":"json","workMessage":"Initialization is successful"}
                      |]""".stripMargin
     assert(jsonCompare(actual, expected), f"Result : $actual\n---\nExpected : $expected")
   }

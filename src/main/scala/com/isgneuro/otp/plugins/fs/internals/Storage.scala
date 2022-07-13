@@ -23,7 +23,7 @@ class Storage(sq: SimpleQuery, utils: PluginUtils) extends PluginCommand(sq, uti
 
   val requiredKeywords: Set[String] = Set("model")
 
-  val modelPath: String = fs + new File(basePath, model + "/").getAbsolutePath
+  val modelPath: String = fs + new File(basePath, model + "/").getPath
 
   def checkModelExisting = {
     val modelExists = new File(modelPath).exists

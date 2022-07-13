@@ -50,7 +50,7 @@ class FSPutTest extends CommandTest {
   import sparkSession.implicits._
 
   test("Write to main by default") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -75,7 +75,7 @@ class FSPutTest extends CommandTest {
   }
 
   test("Write to main") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -232,7 +232,7 @@ class FSPutTest extends CommandTest {
     } else {
       val branchPath = modelPath + "/branch2"
       if (!new File(branchPath).exists()) {
-        log.error("Branch main in model testmodel doesn't exists")
+        log.error("Branch branch2 in model testmodel doesn't exists")
       } else {
         val simpleQuery = SimpleQuery("""model=testmodel branch=branch2""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
@@ -311,16 +311,16 @@ class FSPutTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val branchPath = modelPath + "/main"
+      val branchPath = modelPath + "/branch3"
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testmodel partitionBy=a""")
+        val simpleQuery = SimpleQuery("""model=testmodel branch=branch3 partitionBy=a""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         execute(commandWriteFile)
 
         val expected = jsonToDf(dataset)
-        val actualDF = spark.read.format("parquet").load(branchPath + "/3").select("a", "b").sort("a")
+        val actualDF = spark.read.format("parquet").load(branchPath + "/1").select("a", "b").sort("a")
         assert(actualDF.rdd.getNumPartitions == 2)
         assert(actualDF.except(expected).count() == 0)
       }
@@ -332,16 +332,16 @@ class FSPutTest extends CommandTest {
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
-      val branchPath = modelPath + "/main"
+      val branchPath = modelPath + "/branch3"
       if (!new File(branchPath).exists()) {
         log.error("Branch main in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testmodel partitionBy=a,b""")
+        val simpleQuery = SimpleQuery("""model=testmodel branch=branch3 partitionBy=a,b""")
         val commandWriteFile = new FSPut(simpleQuery, utils)
         commandWriteFile.transform(jsonToDf(dataset3cols))
 
         val expected = jsonToDf(dataset3cols)
-        val actualDF = spark.read.format("parquet").load(branchPath + "/4").select("a", "b", "c").sort("a")
+        val actualDF = spark.read.format("parquet").load(branchPath + "/2").select("a", "b", "c").sort("a")
         assert(actualDF.rdd.getNumPartitions == 3)
         assert(actualDF.except(expected).count() == 0)
       }

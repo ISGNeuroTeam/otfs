@@ -9,7 +9,7 @@ class FSDelModelTest extends CommandTest {
   val dataset: String = ""
 
   test("Delete model") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testcsvmodel" + "/").getPath
     val modelDir = new File(modelPath)
     if (!modelDir.exists()) {
       log.error("Model testcsvmodel doesn't exists.")

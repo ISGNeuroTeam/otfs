@@ -27,14 +27,14 @@ class FSMergeTest extends CommandTest{
   import sparkSession.implicits._
 
   test("Merge") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
       val outBranchPath = modelPath + "/branch1"
       val inBranchPath = modelPath + "/branch2"
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
-        log.error("As   minimum one of branches in model testmodel doesn't exists")
+        log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
         val simpleQuery = SimpleQuery("""model=testmodel outbranch=branch1 inbranch=branch2""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
@@ -49,7 +49,7 @@ class FSMergeTest extends CommandTest{
   }
 
   test("Merge with outbranchversion defining") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -58,7 +58,7 @@ class FSMergeTest extends CommandTest{
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
         log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testmodel outbranch=main inbranch=branch2 outbranchversion=2""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=main inbranch=branch2 outbranchversion=1""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
         execute(commandWriteFile)
 
@@ -71,7 +71,7 @@ class FSMergeTest extends CommandTest{
   }
 
   test("Merge with inbranchversion defining") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -93,7 +93,7 @@ class FSMergeTest extends CommandTest{
   }
 
   test("Merge with out- and inbranchversion defining") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -102,7 +102,7 @@ class FSMergeTest extends CommandTest{
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
         log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel outbranch=main inbranch=branch2 outbranchversion=3 inbranchversion=1""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=main inbranch=branch2 outbranchversion=2 inbranchversion=1""")
         val commandWriteFile = new FSMerge(simpleQuery, utils)
         execute(commandWriteFile)
 
@@ -115,7 +115,7 @@ class FSMergeTest extends CommandTest{
   }
 
   test("Merge with not existing version") {
-    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getAbsolutePath
+    val modelPath = utils.pluginConfig.getString("storage.fs") + new File(utils.pluginConfig.getString("storage.path"), "testmodel" + "/").getPath
     if (!new File(modelPath).exists()) {
       log.error("Model testmodel doesn't exists")
     } else {
@@ -124,7 +124,7 @@ class FSMergeTest extends CommandTest{
       if (!new File(outBranchPath).exists() || !new File(inBranchPath).exists()) {
         log.error("As minimum one of branches in model testmodel doesn't exists")
       } else {
-        val simpleQuery = SimpleQuery("""model=testModel outbranch=branch1 inbranch=branch2 inbranchversion=35""")
+        val simpleQuery = SimpleQuery("""model=testmodel outbranch=branch1 inbranch=branch2 inbranchversion=35""")
         val thrown = intercept[Exception] {
           val commandWriteFile = new FSMerge(simpleQuery, utils)
           execute(commandWriteFile)
