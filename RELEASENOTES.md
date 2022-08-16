@@ -1,3 +1,7 @@
+## [1.0.3]
+### Add
+- License file (LICENSE.md)
+
 ## [1.0.2]
 ### Changed
 - Minor documentation update for `fsput` command.
