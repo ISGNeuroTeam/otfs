@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.3] - 16.08.2022
+### Add
+- License file
+
 ## [1.0.2] - 28.02.2022
 ### Changed
 - Minor documentation update for `fsput` command.

@@ -13,8 +13,8 @@ endef
 GENERATE_VERSION = $(shell grep version build.sbt  | sed -r 's/version := "(.+?)"/\1/' )
 GENERATE_BRANCH = $(shell git name-rev $$(git rev-parse HEAD) | cut -d\  -f2 | sed -re 's/^(remotes\/)?origin\///' | tr '/' '_')
 GENERATE_SCALA_VERSION = $(shell grep scalaVersion build.sbt  | sed -r 's/scalaVersion := "([0-9]+?\.[0-9]+?)\.[0-9]+"/\1/' )
-GENERATE_PROJECT_NAME = $(shell grep name build.sbt  | head -n1 | sed -r 's/name := "(.+?)"/\1/' )
-GENERATE_PROJECT_NAME_LOW_CASE = $(shell grep name build.sbt  | head -n1 | sed -r 's/name := "(.+?)"/\1/' | tr A-Z a-z)
+GENERATE_PROJECT_NAME = $(shell grep name build.sbt  | head -n 1 | sed -r 's/name := "(.+?)"/\1/' )
+GENERATE_PROJECT_NAME_LOW_CASE = $(shell grep name build.sbt  | head -n 1 | sed -r 's/name := "(.+?)"/\1/' | tr A-Z a-z)
 
 
 SET_VERSION = $(eval VERSION=$(GENERATE_VERSION))
@@ -62,7 +62,7 @@ build: package
 	cp CHANGELOG.md build/$(PROJECT_NAME)/
 	cp -r conf/* build/$(PROJECT_NAME)/
 	cp -r docs build/
-	#cp LICENSE.md build/$(PROJECT_NAME)/
+	cp LICENSE.md build/$(PROJECT_NAME)/
 
 clean:
 	# required section
